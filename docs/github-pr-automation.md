@@ -30,7 +30,7 @@ scripts/configure-github-pr-automation.sh <owner/repo>
 - 启用仓库 `Auto-merge`
 - 启用 `Delete branch on merge`
 - 设置默认分支保护：
-  - 必需检查：`PR Quality Gate / quality`
+  - 必需检查：`quality`（`PR Quality Gate` 工作流的质量检查 job）
   - 0 审批（不要求人工 Approve）
   - 必须解决对话
 
