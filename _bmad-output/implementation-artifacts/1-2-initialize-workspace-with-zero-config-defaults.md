@@ -62,6 +62,14 @@ so that 我可以不做复杂配置就进入首个编排流程。
 - [x] [AI-Review][Medium] 同步 Story File List 与实际变更，补充 `sprint-status.yaml` 的变更记录 [/_bmad-output/implementation-artifacts/1-2-initialize-workspace-with-zero-config-defaults.md:212]
 - [x] [AI-Review][Medium] 增加可机读耗时字段（如 `duration_ms`）以满足”耗时可观测”子任务，不仅依赖 `meta.timestamp` [src/cli/envelope.ts:14]
 
+### Review Follow-ups (PR Round 2 - Codex)
+
+- [x] [P1] 用 `mkdir({recursive:true})` 返回值替代 `existsSync` 消除非目录碰撞漏检 [src/core/workspace/workspace-initializer.ts]
+- [x] [P2] 拒绝符号链接工作区目录 — 新增 `rejectSymlink()` 辅助函数 [src/core/workspace/workspace-initializer.ts]
+- [x] [P2] 拒绝符号链接数据文件（events.jsonl/state.json）[src/core/workspace/workspace-initializer.ts]
+- [x] [P2] 拒绝符号链接配置文件 — config-writer EEXIST 路径增加 lstat 检测 [src/config/config-writer.ts]
+- [x] 重构提取 `ensureDirectory()` 和 `ensureFile()` 消除 max-depth lint warnings
+
 ## Dev Notes
 
 ### Developer Context Section
@@ -224,6 +232,7 @@ gpt-5-codex (SM create-story yolo)
 
 - 2026-03-07: Story 1-2 全部 tasks/subtasks 实现完成，80 tests 通过，lint/tsc 零错误
 - 2026-03-07: Addressed code review findings — 6 items resolved (1 Critical, 2 High, 3 Medium)
+- 2026-03-07: PR round 2 — 修复 Codex 1×P1 + 3×P2 评论（非目录碰撞、符号链接安全），重构降低嵌套深度
 
 ### File List
 
