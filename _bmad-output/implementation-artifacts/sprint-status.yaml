@@ -66,29 +66,29 @@ development_status:
   epic-3-retrospective: optional
 
   # Epic 4: Multi-Agent Context Handoff & Adapter Routing
-  epic-4: backlog
-  4-1-define-agent-roles-adapter-capability-schema-and-default-routing-config: backlog
-  4-2-route-requests-via-strategy-and-priority-aware-adapter-router: backlog
-  4-3-execute-cross-agent-handoff-via-ai-dev-handoff: backlog
-  4-4-assemble-and-validate-context-packet-contract-for-handoff: backlog
-  4-5-write-back-agent-output-to-current-stage-context: backlog
-  4-6-continue-same-workflow-after-handoff-without-rebuilding-state: backlog
-  4-7-manage-restricted-adapter-connectors-register-enable-disable-declare-capabilities: backlog
+  epic-4: done
+  4-1-define-agent-roles-adapter-capability-schema-and-default-routing-config: done
+  4-2-route-requests-via-strategy-and-priority-aware-adapter-router: done
+  4-3-execute-cross-agent-handoff-via-ai-dev-handoff: done
+  4-4-assemble-and-validate-context-packet-contract-for-handoff: done
+  4-5-write-back-agent-output-to-current-stage-context: done
+  4-6-continue-same-workflow-after-handoff-without-rebuilding-state: done
+  4-7-manage-restricted-adapter-connectors-register-enable-disable-declare-capabilities: done
   epic-4-retrospective: optional
 
   # Epic 5: Recovery, Resume & Deterministic Replay
-  epic-5: backlog
-  5-1-enforce-preflight-validation-pipeline-before-recovery: backlog
-  5-2-resume-safely-with-hard-stop-on-validation-failure: backlog
-  5-3-replay-events-deterministically-with-checkpoint-segmentation: backlog
-  5-4-manage-snapshot-lifecycle-and-recovery-checkpoints: backlog
-  5-5-classify-recovery-failures-and-return-actionable-error-paths: backlog
+  epic-5: done
+  5-1-enforce-preflight-validation-pipeline-before-recovery: done
+  5-2-resume-safely-with-hard-stop-on-validation-failure: done
+  5-3-replay-events-deterministically-with-checkpoint-segmentation: done
+  5-4-manage-snapshot-lifecycle-and-recovery-checkpoints: done
+  5-5-classify-recovery-failures-and-return-actionable-error-paths: done
   epic-5-retrospective: optional
 
   # Epic 6: Runtime Observability & Decision Audit
-  epic-6: backlog
-  6-1-provide-unified-observability-query-contract-for-log-events-stage: backlog
-  6-2-support-rich-filtering-and-retrieval-for-events-and-decisions: backlog
-  6-3-export-events-and-decisions-with-stable-audit-contract: backlog
-  6-4-enforce-mandatory-audit-trail-for-critical-runtime-actions: backlog
+  epic-6: done
+  6-1-provide-unified-observability-query-contract-for-log-events-stage: done
+  6-2-support-rich-filtering-and-retrieval-for-events-and-decisions: done
+  6-3-export-events-and-decisions-with-stable-audit-contract: done
+  6-4-enforce-mandatory-audit-trail-for-critical-runtime-actions: done
   epic-6-retrospective: optional
