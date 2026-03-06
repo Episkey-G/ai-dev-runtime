@@ -15,6 +15,12 @@ export const ErrorCodes = {
   CFG_NPM_UNAVAILABLE: 'CFG_NPM_UNAVAILABLE',
   /** 配置校验失败 */
   CFG_VALIDATION_FAILED: 'CFG_VALIDATION_FAILED',
+  /** 工作区目录无写权限 */
+  CFG_WORKSPACE_PERMISSION: 'CFG_WORKSPACE_PERMISSION',
+  /** 工作区已存在（幂等场景） */
+  CFG_WORKSPACE_EXISTS: 'CFG_WORKSPACE_EXISTS',
+  /** 工作区路径无效 */
+  CFG_WORKSPACE_PATH_INVALID: 'CFG_WORKSPACE_PATH_INVALID',
 } as const
 
 export type ErrorCode = (typeof ErrorCodes)[keyof typeof ErrorCodes]
@@ -26,4 +32,7 @@ export const RecoveryActions: Record<ErrorCode, string> = {
   [ErrorCodes.CFG_NODE_VERSION]: '请升级 Node.js 至 24 LTS 或更高版本: https://nodejs.org/',
   [ErrorCodes.CFG_NPM_UNAVAILABLE]: '请确认 npm 已安装且可用: npm --version',
   [ErrorCodes.CFG_VALIDATION_FAILED]: '请检查配置文件内容是否符合 schema 要求',
+  [ErrorCodes.CFG_WORKSPACE_PERMISSION]: '请检查目标目录权限或切换到有写权限的目录',
+  [ErrorCodes.CFG_WORKSPACE_EXISTS]: '工作区已存在，如需重新初始化请先删除 .ai-dev 目录或使用 --force 覆盖',
+  [ErrorCodes.CFG_WORKSPACE_PATH_INVALID]: '请检查路径是否合法（不能包含特殊字符）',
 }
