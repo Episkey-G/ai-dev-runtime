@@ -41,7 +41,7 @@ development_status:
   # Epic 1: CLI Runtime Initialization & First Orchestration
   epic-1: in-progress
   1-1-set-up-initial-project-from-oclif-starter-template-and-verify-cli-availability: done
-  1-2-initialize-workspace-with-zero-config-defaults: backlog
+  1-2-initialize-workspace-with-zero-config-defaults: review
   1-3-view-and-update-project-orchestration-config: backlog
   1-4-start-first-orchestration-from-initialized-workspace: backlog
   1-5-deliver-day-1-quickstart-and-migration-guide: backlog

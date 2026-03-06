@@ -20,12 +20,18 @@ export function outputResult(
 ): void {
   if (flags.json) {
     outputJson(envelope)
+    if (!envelope.ok) {
+      process.exitCode = 1
+    }
+
     return
   }
 
   if (envelope.ok) {
     command.log(typeof envelope.data === 'string' ? envelope.data : JSON.stringify(envelope.data, null, 2))
   } else {
-    command.error(`[${envelope.error.code}] ${envelope.error.message}`)
+    const errMsg = `[${envelope.error.code}] ${envelope.error.message}`
+    const recovery = envelope.error.recovery ? `\n恢复方法: ${envelope.error.recovery}` : ''
+    command.error(errMsg + recovery)
   }
 }
