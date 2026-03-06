@@ -92,3 +92,11 @@ development_status:
   6-3-export-events-and-decisions-with-stable-audit-contract: done
   6-4-enforce-mandatory-audit-trail-for-critical-runtime-actions: done
   epic-6-retrospective: optional
+
+  # Epic 7: Decision Log & Traceability
+  epic-7: done
+  7-1-query-decision-history-by-time: done
+  7-2-filter-history-by-stage-gate-decision: done
+  7-3-export-decision-history: done
+  7-4-append-only-event-writing: done
+  epic-7-retrospective: optional
