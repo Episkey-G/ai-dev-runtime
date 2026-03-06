@@ -46,6 +46,14 @@ const LEGAL_TRANSITIONS: Record<string, string[]> = {
   RECOVER: ['IMPLEMENT', 'REVIEW', 'IDLE'],
 }
 
+/** 验证状态迁移是否合法 */
+function validateTransition(from: string, to: string): void {
+  const allowedTargets = LEGAL_TRANSITIONS[from] ?? []
+  if (!allowedTargets.includes(to)) {
+    throw new Error(`非法状态迁移: ${from} -> ${to}`)
+  }
+}
+
 /** Next 命令：根据当前阶段生成下一步建议 */
 export default class Next extends Command {
   static override description = '基于当前阶段生成下一步建议并推进工作流'
@@ -79,28 +87,9 @@ export default class Next extends Command {
         lastTransition: Record<string, unknown> | null
       }
 
-      const currentStage = state.stage
-
-      // 获取当前阶段的允许动作
-      const allowedActions = getAllowedActions(currentStage)
-
-      // 获取推荐动作
-      const recommendedAction = getRecommendedAction(currentStage)
-
-      // 检查是否需要 Gate 决策
-      const gateRequired = isGateRequired(currentStage)
-
-      // 生成建议
-      const suggestion = {
-        currentStage,
-        allowedActions,
-        recommendedAction,
-        gateRequired,
-        reason: getTransitionReason(currentStage),
-      }
-
       // 如果是首次运行，写入初始事件
       if (!state.sessionId) {
+        validateTransition(state.stage, 'RESEARCH')
         state.sessionId = generateSessionId()
         state.stage = 'RESEARCH' // 首次推进到 RESEARCH
         state.lastTransition = {
@@ -110,6 +99,21 @@ export default class Next extends Command {
           reason: '初始化工作流',
         }
         saveState(workspacePath, state)
+      }
+
+      // 获取当前阶段的允许动作（必须在状态更新后）
+      const finalStage = state.stage
+      const allowedActions = getAllowedActions(finalStage)
+      const recommendedAction = getRecommendedAction(finalStage)
+      const gateRequired = isGateRequired(finalStage)
+
+      // 生成建议
+      const suggestion = {
+        currentStage: finalStage,
+        allowedActions,
+        recommendedAction,
+        gateRequired,
+        reason: getTransitionReason(finalStage),
       }
 
       outputResult(
