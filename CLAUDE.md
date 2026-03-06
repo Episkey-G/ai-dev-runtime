@@ -86,6 +86,14 @@ tests/
 - Adapter changes must verify intent-result/compensation pairing and idempotency keys
 - `--json` output changes require contract tests for field stability
 
+## Git Workflow
+
+- **禁止直接提交到 `main` 分支**，所有变更必须通过 PR 合并
+- 分支命名：`feat/<story-key>`、`fix/<description>`、`chore/<description>`
+- PR 必须经过代码审查后才能合并
+- Commit message 使用 Conventional Commits 格式，中文描述
+- 每个 Story 对应一个 feature 分支，完成后提 PR
+
 ## Language
 
 All code comments and documentation must be in Simplified Chinese (简体中文).
