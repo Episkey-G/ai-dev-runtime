@@ -4,7 +4,12 @@
  * 失败：{ ok: false, error: { code, message, details }, meta }
  */
 
+import {createRequire} from 'node:module'
+
 import type {ErrorCode} from './error-codes.js'
+
+const require = createRequire(import.meta.url)
+const pkg = require('../../package.json') as {version: string}
 
 /** 输出元数据 */
 export interface EnvelopeMeta {
@@ -46,10 +51,9 @@ function buildMeta(): EnvelopeMeta {
   }
 }
 
-/** 获取当前 CLI 版本 */
+/** 获取当前 CLI 版本（统一从 package.json 读取，与 version 命令一致） */
 function getVersion(): string {
-  // 运行时从 package.json 读取，此处硬编码为 fallback
-  return process.env.AI_DEV_VERSION ?? '0.1.0'
+  return pkg.version
 }
 
 /** 创建成功 envelope */

@@ -5,7 +5,8 @@
 
 import {execSync} from 'node:child_process'
 import {existsSync} from 'node:fs'
-import {resolve} from 'node:path'
+import {dirname, resolve} from 'node:path'
+import {fileURLToPath} from 'node:url'
 
 import type {ErrorDetail} from './envelope.js'
 
@@ -15,6 +16,9 @@ const MIN_NODE_MAJOR = 24
 
 /** 关键依赖列表（必须在 node_modules 中存在） */
 const CRITICAL_DEPENDENCIES = ['@oclif/core'] as const
+
+/** CLI 包根目录（基于当前文件位置向上两级：src/cli/ → 项目根） */
+const CLI_ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '../..')
 
 /** 检查 Node.js 版本 */
 export function checkNodeVersion(): ErrorDetail | null {
@@ -46,12 +50,12 @@ export function checkNpmAvailability(): ErrorDetail | null {
   }
 }
 
-/** 检查关键依赖存在性 */
+/** 检查关键依赖存在性（基于 CLI 安装目录，非 process.cwd()） */
 export function checkCriticalDependencies(): ErrorDetail | null {
   const missing: string[] = []
 
   for (const dep of CRITICAL_DEPENDENCIES) {
-    const depPath = resolve(process.cwd(), 'node_modules', dep)
+    const depPath = resolve(CLI_ROOT, 'node_modules', dep)
     if (!existsSync(depPath)) {
       missing.push(dep)
     }
