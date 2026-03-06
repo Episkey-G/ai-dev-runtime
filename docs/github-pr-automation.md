@@ -31,15 +31,14 @@ scripts/configure-github-pr-automation.sh <owner/repo>
 - 启用 `Delete branch on merge`
 - 设置默认分支保护：
   - 必需检查：`PR Quality Gate / quality`
-  - 至少 1 个审批
+  - 0 审批（不要求人工 Approve）
   - 必须解决对话
 
 ## 日常使用
 
 1. 提交 PR，等待 `PR Quality Gate` 通过。
-2. 获得至少 1 个审批。
-3. 给 PR 打上 `automerge` 标签。
-4. 系统自动启用 auto-merge，检查和审批满足后自动 squash 合并并删除分支。
+2. 给 PR 打上 `automerge` 标签。
+3. 系统自动启用 auto-merge，检查满足后自动 squash 合并并删除分支。
 
 ## 常见失败排查
 

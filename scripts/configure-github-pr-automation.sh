@@ -31,7 +31,7 @@ if ! gh repo edit "${repo}" --enable-auto-merge --delete-branch-on-merge >/dev/n
   exit 1
 fi
 
-echo "步骤 2/2：设置默认分支保护规则（要求 1 个审批 + 必需检查）"
+echo "步骤 2/2：设置默认分支保护规则（0 审批 + 必需检查）"
 tmp_payload="$(mktemp)"
 trap 'rm -f "${tmp_payload}"' EXIT
 
@@ -47,7 +47,7 @@ cat > "${tmp_payload}" <<'JSON'
   "required_pull_request_reviews": {
     "dismiss_stale_reviews": true,
     "require_code_owner_reviews": false,
-    "required_approving_review_count": 1,
+    "required_approving_review_count": 0,
     "require_last_push_approval": false
   },
   "restrictions": null,
@@ -69,5 +69,5 @@ fi
 
 echo "配置完成："
 echo "- 已启用仓库 Auto-merge"
-echo "- 已配置默认分支保护（1 个审批 + 必需检查 PR Quality Gate / quality）"
+echo "- 已配置默认分支保护（0 审批 + 必需检查 PR Quality Gate / quality）"
 echo "- 可在 PR 上打标签 automerge 触发自动合并"
