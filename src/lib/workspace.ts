@@ -35,7 +35,7 @@ export interface InitResult {
 }
 
 /** 默认工作区配置 */
-export function getDefaultConfig(workspacePath: string): WorkspaceConfig {
+export function getDefaultConfig(): WorkspaceConfig {
   return {
     version: pkg.version,
     workspaceVersion: '1.0.0',
@@ -106,7 +106,7 @@ export async function initializeWorkspace(
     // 4. 创建初始配置文件
     const configPath = path.join(workspacePath, 'config.json')
     if (!fs.existsSync(configPath) || force) {
-      const config = getDefaultConfig(targetPath)
+      const config = getDefaultConfig()
       fs.writeFileSync(configPath, JSON.stringify(config, null, 2))
       created.push('config.json')
     }

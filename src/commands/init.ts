@@ -83,10 +83,14 @@ export default class Init extends Command {
     } catch (err) {
       const errnoCode = (err as NodeJS.ErrnoException).code
       const rawMessage = (err as Error).message
+      const validErrorCodes = new Set(Object.values(ErrorCodes))
+      const resolvedFromMessage = validErrorCodes.has(rawMessage as (typeof ErrorCodes)[keyof typeof ErrorCodes])
+        ? (rawMessage as (typeof ErrorCodes)[keyof typeof ErrorCodes])
+        : ErrorCodes.CFG_VALIDATION_FAILED
       const errorCode =
         errnoCode === 'EACCES' || errnoCode === 'EPERM' || rawMessage === ErrorCodes.CFG_WORKSPACE_PERMISSION
           ? ErrorCodes.CFG_WORKSPACE_PERMISSION
-          : (rawMessage as (typeof ErrorCodes)[keyof typeof ErrorCodes]) || ErrorCodes.CFG_VALIDATION_FAILED
+          : resolvedFromMessage
 
       const error = {
         code: errorCode as (typeof ErrorCodes)[keyof typeof ErrorCodes],
