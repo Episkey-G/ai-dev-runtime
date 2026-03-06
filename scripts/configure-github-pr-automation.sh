@@ -39,8 +39,11 @@ cat > "${tmp_payload}" <<'JSON'
 {
   "required_status_checks": {
     "strict": true,
-    "contexts": [
-      "PR Quality Gate / quality"
+    "checks": [
+      {
+        "context": "quality",
+        "app_id": -1
+      }
     ]
   },
   "enforce_admins": true,
@@ -69,5 +72,5 @@ fi
 
 echo "配置完成："
 echo "- 已启用仓库 Auto-merge"
-echo "- 已配置默认分支保护（0 审批 + 必需检查 PR Quality Gate / quality）"
+echo "- 已配置默认分支保护（0 审批 + 必需检查 quality）"
 echo "- 可在 PR 上打标签 automerge 触发自动合并"
