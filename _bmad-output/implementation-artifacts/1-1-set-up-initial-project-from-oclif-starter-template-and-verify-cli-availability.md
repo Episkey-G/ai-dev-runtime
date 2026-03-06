@@ -1,6 +1,6 @@
 # Story 1.1: Set Up Initial Project from oclif Starter Template and Verify CLI Availability
 
-Status: in-progress
+Status: review
 
 <!-- Note: Validation is optional. Run validate-create-story for quality check before dev-story. -->
 
