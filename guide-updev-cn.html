@@ -1,0 +1,653 @@
+<!DOCTYPE html>
+<!-- saved from url=(0070)file:///E:/ai/open/AgileCode/.bmad-core/working-in-the-brownfield.html -->
+<html class="translated-ltr"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+      <title>在二次开发项目上工作</title>
+      
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      
+      <link rel="stylesheet" href="./guide-updev-cn_files/katex.min.css">
+      
+      
+      
+      
+      
+      <style>
+      code[class*=language-],pre[class*=language-]{color:#333;background:0 0;font-family:Consolas,"Liberation Mono",Menlo,Courier,monospace;text-align:left;white-space:pre;word-spacing:normal;word-break:normal;word-wrap:normal;line-height:1.4;-moz-tab-size:8;-o-tab-size:8;tab-size:8;-webkit-hyphens:none;-moz-hyphens:none;-ms-hyphens:none;hyphens:none}pre[class*=language-]{padding:.8em;overflow:auto;border-radius:3px;background:#f5f5f5}:not(pre)>code[class*=language-]{padding:.1em;border-radius:.3em;white-space:normal;background:#f5f5f5}.token.blockquote,.token.comment{color:#969896}.token.cdata{color:#183691}.token.doctype,.token.macro.property,.token.punctuation,.token.variable{color:#333}.token.builtin,.token.important,.token.keyword,.token.operator,.token.rule{color:#a71d5d}.token.attr-value,.token.regex,.token.string,.token.url{color:#183691}.token.atrule,.token.boolean,.token.code,.token.command,.token.constant,.token.entity,.token.number,.token.property,.token.symbol{color:#0086b3}.token.prolog,.token.selector,.token.tag{color:#63a35c}.token.attr-name,.token.class,.token.class-name,.token.function,.token.id,.token.namespace,.token.pseudo-class,.token.pseudo-element,.token.url-reference .token.variable{color:#795da3}.token.entity{cursor:help}.token.title,.token.title .token.punctuation{font-weight:700;color:#1d3e81}.token.list{color:#ed6a43}.token.inserted{background-color:#eaffea;color:#55a532}.token.deleted{background-color:#ffecec;color:#bd2c00}.token.bold{font-weight:700}.token.italic{font-style:italic}.language-json .token.property{color:#183691}.language-markup .token.tag .token.punctuation{color:#333}.language-css .token.function,code.language-css{color:#0086b3}.language-yaml .token.atrule{color:#63a35c}code.language-yaml{color:#183691}.language-ruby .token.function{color:#333}.language-markdown .token.url{color:#795da3}.language-makefile .token.symbol{color:#795da3}.language-makefile .token.variable{color:#183691}.language-makefile .token.builtin{color:#0086b3}.language-bash .token.keyword{color:#0086b3}pre[data-line]{position:relative;padding:1em 0 1em 3em}pre[data-line] .line-highlight-wrapper{position:absolute;top:0;left:0;background-color:transparent;display:block;width:100%}pre[data-line] .line-highlight{position:absolute;left:0;right:0;padding:inherit 0;margin-top:1em;background:hsla(24,20%,50%,.08);background:linear-gradient(to right,hsla(24,20%,50%,.1) 70%,hsla(24,20%,50%,0));pointer-events:none;line-height:inherit;white-space:pre}pre[data-line] .line-highlight:before,pre[data-line] .line-highlight[data-end]:after{content:attr(data-start);position:absolute;top:.4em;left:.6em;min-width:1em;padding:0 .5em;background-color:hsla(24,20%,50%,.4);color:#f4f1ef;font:bold 65%/1.5 sans-serif;text-align:center;vertical-align:.3em;border-radius:999px;text-shadow:none;box-shadow:0 1px #fff}pre[data-line] .line-highlight[data-end]:after{content:attr(data-end);top:auto;bottom:.4em}html body{font-family:'Helvetica Neue',Helvetica,'Segoe UI',Arial,freesans,sans-serif;font-size:16px;line-height:1.6;color:#333;background-color:#fff;overflow:initial;box-sizing:border-box;word-wrap:break-word}html body>:first-child{margin-top:0}html body h1,html body h2,html body h3,html body h4,html body h5,html body h6{line-height:1.2;margin-top:1em;margin-bottom:16px;color:#000}html body h1{font-size:2.25em;font-weight:300;padding-bottom:.3em}html body h2{font-size:1.75em;font-weight:400;padding-bottom:.3em}html body h3{font-size:1.5em;font-weight:500}html body h4{font-size:1.25em;font-weight:600}html body h5{font-size:1.1em;font-weight:600}html body h6{font-size:1em;font-weight:600}html body h1,html body h2,html body h3,html body h4,html body h5{font-weight:600}html body h5{font-size:1em}html body h6{color:#5c5c5c}html body strong{color:#000}html body del{color:#5c5c5c}html body a:not([href]){color:inherit;text-decoration:none}html body a{color:#08c;text-decoration:none}html body a:hover{color:#00a3f5;text-decoration:none}html body img{max-width:100%}html body>p{margin-top:0;margin-bottom:16px;word-wrap:break-word}html body>ol,html body>ul{margin-bottom:16px}html body ol,html body ul{padding-left:2em}html body ol.no-list,html body ul.no-list{padding:0;list-style-type:none}html body ol ol,html body ol ul,html body ul ol,html body ul ul{margin-top:0;margin-bottom:0}html body li{margin-bottom:0}html body li.task-list-item{list-style:none}html body li>p{margin-top:0;margin-bottom:0}html body .task-list-item-checkbox{margin:0 .2em .25em -1.8em;vertical-align:middle}html body .task-list-item-checkbox:hover{cursor:pointer}html body blockquote{margin:16px 0;font-size:inherit;padding:0 15px;color:#5c5c5c;background-color:#f0f0f0;border-left:4px solid #d6d6d6}html body blockquote>:first-child{margin-top:0}html body blockquote>:last-child{margin-bottom:0}html body hr{height:4px;margin:32px 0;background-color:#d6d6d6;border:0 none}html body table{margin:10px 0 15px 0;border-collapse:collapse;border-spacing:0;display:block;width:100%;overflow:auto;word-break:normal;word-break:keep-all}html body table th{font-weight:700;color:#000}html body table td,html body table th{border:1px solid #d6d6d6;padding:6px 13px}html body dl{padding:0}html body dl dt{padding:0;margin-top:16px;font-size:1em;font-style:italic;font-weight:700}html body dl dd{padding:0 16px;margin-bottom:16px}html body code{font-family:Menlo,Monaco,Consolas,'Courier New',monospace;font-size:.85em;color:#000;background-color:#f0f0f0;border-radius:3px;padding:.2em 0}html body code::after,html body code::before{letter-spacing:-.2em;content:'\00a0'}html body pre>code{padding:0;margin:0;word-break:normal;white-space:pre;background:0 0;border:0}html body .highlight{margin-bottom:16px}html body .highlight pre,html body pre{padding:1em;overflow:auto;line-height:1.45;border:#d6d6d6;border-radius:3px}html body .highlight pre{margin-bottom:0;word-break:normal}html body pre code,html body pre tt{display:inline;max-width:initial;padding:0;margin:0;overflow:initial;line-height:inherit;word-wrap:normal;background-color:transparent;border:0}html body pre code:after,html body pre code:before,html body pre tt:after,html body pre tt:before{content:normal}html body blockquote,html body dl,html body ol,html body p,html body pre,html body ul{margin-top:0;margin-bottom:16px}html body kbd{color:#000;border:1px solid #d6d6d6;border-bottom:2px solid #c7c7c7;padding:2px 4px;background-color:#f0f0f0;border-radius:3px}@media print{html body{background-color:#fff}html body h1,html body h2,html body h3,html body h4,html body h5,html body h6{color:#000;page-break-after:avoid}html body blockquote{color:#5c5c5c}html body pre{page-break-inside:avoid}html body table{display:table}html body img{display:block;max-width:100%;max-height:100%}html body code,html body pre{word-wrap:break-word;white-space:pre}}.markdown-preview{width:100%;height:100%;box-sizing:border-box}.markdown-preview ul{list-style:disc}.markdown-preview ul ul{list-style:circle}.markdown-preview ul ul ul{list-style:square}.markdown-preview ol{list-style:decimal}.markdown-preview ol ol,.markdown-preview ul ol{list-style-type:lower-roman}.markdown-preview ol ol ol,.markdown-preview ol ul ol,.markdown-preview ul ol ol,.markdown-preview ul ul ol{list-style-type:lower-alpha}.markdown-preview .newpage,.markdown-preview .pagebreak{page-break-before:always}.markdown-preview pre.line-numbers{position:relative;padding-left:3.8em;counter-reset:linenumber}.markdown-preview pre.line-numbers>code{position:relative}.markdown-preview pre.line-numbers .line-numbers-rows{position:absolute;pointer-events:none;top:1em;font-size:100%;left:0;width:3em;letter-spacing:-1px;border-right:1px solid #999;-webkit-user-select:none;-moz-user-select:none;-ms-user-select:none;user-select:none}.markdown-preview pre.line-numbers .line-numbers-rows>span{pointer-events:none;display:block;counter-increment:linenumber}.markdown-preview pre.line-numbers .line-numbers-rows>span:before{content:counter(linenumber);color:#999;display:block;padding-right:.8em;text-align:right}.markdown-preview .mathjax-exps .MathJax_Display{text-align:center!important}.markdown-preview:not([data-for=preview]) .code-chunk .code-chunk-btn-group{display:none}.markdown-preview:not([data-for=preview]) .code-chunk .status{display:none}.markdown-preview:not([data-for=preview]) .code-chunk .output-div{margin-bottom:16px}.markdown-preview .md-toc{padding:0}.markdown-preview .md-toc .md-toc-link-wrapper .md-toc-link{display:inline;padding:.25rem 0}.markdown-preview .md-toc .md-toc-link-wrapper .md-toc-link div,.markdown-preview .md-toc .md-toc-link-wrapper .md-toc-link p{display:inline}.markdown-preview .md-toc .md-toc-link-wrapper.highlighted .md-toc-link{font-weight:800}.scrollbar-style::-webkit-scrollbar{width:8px}.scrollbar-style::-webkit-scrollbar-track{border-radius:10px;background-color:transparent}.scrollbar-style::-webkit-scrollbar-thumb{border-radius:5px;background-color:rgba(150,150,150,.66);border:4px solid rgba(150,150,150,.66);background-clip:content-box}html body[for=html-export]:not([data-presentation-mode]){position:relative;width:100%;height:100%;top:0;left:0;margin:0;padding:0;overflow:auto}html body[for=html-export]:not([data-presentation-mode]) .markdown-preview{position:relative;top:0;min-height:100vh}@media screen and (min-width:914px){html body[for=html-export]:not([data-presentation-mode]) .markdown-preview{padding:2em calc(50% - 457px + 2em)}}@media screen and (max-width:914px){html body[for=html-export]:not([data-presentation-mode]) .markdown-preview{padding:2em}}@media screen and (max-width:450px){html body[for=html-export]:not([data-presentation-mode]) .markdown-preview{font-size:14px!important;padding:1em}}@media print{html body[for=html-export]:not([data-presentation-mode]) #sidebar-toc-btn{display:none}}html body[for=html-export]:not([data-presentation-mode]) #sidebar-toc-btn{position:fixed;bottom:8px;left:8px;font-size:28px;cursor:pointer;color:inherit;z-index:99;width:32px;text-align:center;opacity:.4}html body[for=html-export]:not([data-presentation-mode])[html-show-sidebar-toc] #sidebar-toc-btn{opacity:1}html body[for=html-export]:not([data-presentation-mode])[html-show-sidebar-toc] .md-sidebar-toc{position:fixed;top:0;left:0;width:300px;height:100%;padding:32px 0 48px 0;font-size:14px;box-shadow:0 0 4px rgba(150,150,150,.33);box-sizing:border-box;overflow:auto;background-color:inherit}html body[for=html-export]:not([data-presentation-mode])[html-show-sidebar-toc] .md-sidebar-toc::-webkit-scrollbar{width:8px}html body[for=html-export]:not([data-presentation-mode])[html-show-sidebar-toc] .md-sidebar-toc::-webkit-scrollbar-track{border-radius:10px;background-color:transparent}html body[for=html-export]:not([data-presentation-mode])[html-show-sidebar-toc] .md-sidebar-toc::-webkit-scrollbar-thumb{border-radius:5px;background-color:rgba(150,150,150,.66);border:4px solid rgba(150,150,150,.66);background-clip:content-box}html body[for=html-export]:not([data-presentation-mode])[html-show-sidebar-toc] .md-sidebar-toc a{text-decoration:none}html body[for=html-export]:not([data-presentation-mode])[html-show-sidebar-toc] .md-sidebar-toc .md-toc{padding:0 16px}html body[for=html-export]:not([data-presentation-mode])[html-show-sidebar-toc] .md-sidebar-toc .md-toc .md-toc-link-wrapper .md-toc-link{display:inline;padding:.25rem 0}html body[for=html-export]:not([data-presentation-mode])[html-show-sidebar-toc] .md-sidebar-toc .md-toc .md-toc-link-wrapper .md-toc-link div,html body[for=html-export]:not([data-presentation-mode])[html-show-sidebar-toc] .md-sidebar-toc .md-toc .md-toc-link-wrapper .md-toc-link p{display:inline}html body[for=html-export]:not([data-presentation-mode])[html-show-sidebar-toc] .md-sidebar-toc .md-toc .md-toc-link-wrapper.highlighted .md-toc-link{font-weight:800}html body[for=html-export]:not([data-presentation-mode])[html-show-sidebar-toc] .markdown-preview{left:300px;width:calc(100% - 300px);padding:2em calc(50% - 457px - 300px / 2);margin:0;box-sizing:border-box}@media screen and (max-width:1274px){html body[for=html-export]:not([data-presentation-mode])[html-show-sidebar-toc] .markdown-preview{padding:2em}}@media screen and (max-width:450px){html body[for=html-export]:not([data-presentation-mode])[html-show-sidebar-toc] .markdown-preview{width:100%}}html body[for=html-export]:not([data-presentation-mode]):not([html-show-sidebar-toc]) .markdown-preview{left:50%;transform:translateX(-50%)}html body[for=html-export]:not([data-presentation-mode]):not([html-show-sidebar-toc]) .md-sidebar-toc{display:none}
+/* Please visit the URL below for more information: */
+/*   https://shd101wyy.github.io/markdown-preview-enhanced/#/customize-css */
+
+      </style>
+      <!-- The content below will be included at the end of the <head> element. --><script type="text/javascript">
+  document.addEventListener("DOMContentLoaded", function () {
+    // your code here
+  });
+</script><link type="text/css" rel="stylesheet" charset="UTF-8" href="./guide-updev-cn_files/m=el_main_css"></head><body for="html-export">
+    
+    
+      <div class="crossnote markdown-preview  ">
+      
+<h1 id="working-in-the-brownfield-a-complete-guide"><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">二次开发项目：完整指南</font></font></h1>
+<h2 id="critical-tip"><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">重要提示</font></font></h2>
+<p><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">无论您对现有项目有何计划，想要开始代理编码，为代理生成上下文工件都是至关重要的。</font></font></p>
+<p><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">如果使用 Claude Code - 建议与架构师一起使用文档项目任务为您的代码库系统地生成重要的关键工件。</font></font></p>
+<p><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">您也可以选择使用 Gemini 之类的 Web 代理，为您的代码库提供上下文信息和理解。如果项目已经在 GitHub 上，您可以在 Gemini 中提供项目 URL，并使用代理，结合团队全栈或架构师专用的 Gem 来分析或记录项目。</font></font></p>
+<h2 id="what-is-brownfield-development"><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">什么是项目二次开发？</font></font></h2>
+<p><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">项目二开开发是指添加功能、修复错误或对现有软件项目进行现代化改造。与新项目不同，项目二开工作需要理解现有代码、尊重约束条件，并确保新的变更能够无缝集成，而不会破坏现有功能。</font></font></p>
+<h2 id="when-to-use-bmad-for-brownfield"><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">何时使用 BMad 进行项目二开</font></font></h2>
+<ul>
+<li><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">为现有应用程序添加重要的新功能</font></font></li>
+<li><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">现代化遗留代码库</font></font></li>
+<li><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">整合新技术或服务</font></font></li>
+<li><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">重构复杂系统</font></font></li>
+<li><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">修复需要了解架构的错误</font></font></li>
+<li><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">记录未记录的系统</font></font></li>
+</ul>
+<h2 id="when-not-to-use-a-brownfield-flow"><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">何时不使用项目二开流</font></font></h2>
+<p><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">如果您刚刚使用 BMad 完成了 MVP，并且想要继续进行后 MVP，那么更简单的方法是直接与 PM 交谈并要求其与您合作创建一个新的史诗以添加到 PRD 中，将史诗分片，与架构师一起更新任何架构文档，然后从那里开始。</font></font></p>
+<h2 id="the-complete-brownfield-workflow"><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">完整的项目二开工作流程</font></font></h2>
+<p><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">从 Web 选项开始（可能会节省一些成本，但可能会带来更令人沮丧的体验）：</font></font></p>
+<ol>
+<li><strong><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">关注</font></font><a href="./guide-cn.html#installation"><ins><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">用户指南 - 安装</font></font></ins></a><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">在网络上设置代理的步骤。</font></font></strong></li>
+<li><strong><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">生成整个代码库运行的“扁平化”单个文件</font></font></strong><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">：</font></font><code>npx bmad-method flatten</code></li>
+</ol>
+<p><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">从具有广泛背景和良好模型的 IDE 开始（为了获得最佳结果，在此过程中使用高质量模型非常重要）</font></font></p>
+<ol>
+<li><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">在 Claude Code 或类似的 IDE 中，选择架构师代理，然后使用 *document-project 任务。您需要确保验证并指导代理生成尽可能好的文档，以便 LLM 理解您的代码库，并且不包含任何误导性或不必要的信息。</font></font></li>
+</ol>
+<h3 id="choose-your-approach"><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">选择您的方法</font></font></h3>
+<h4 id="approach-a-prd-first-recommended-if-adding-very-large-and-complex-new-features-single-or-multiple-epics-or-massive-changes"><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">方法 A：PRD-First（如果添加非常大且复杂的新功能、单个或多个史诗或大规模更改，建议使用）</font></font></h4>
+<p><strong><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">最适合</font></font></strong><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">：大型代码库、单一存储库，或者当你确切知道要构建什么时</font></font></p>
+<ol>
+<li><strong><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">创建 PRD 首先</font></font></strong><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">定义需求</font></font></li>
+<li><strong><font dir="auto" style="vertical-align: inherit;"></font></strong><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">根据 PRD 需求</font><strong><font dir="auto" style="vertical-align: inherit;">仅记录相关领域</font></strong></font></li>
+<li><strong><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">更高效</font></font></strong><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">——避免记录未使用的代码</font></font></li>
+</ol>
+<h4 id="approach-b-document-first-good-for-smaller-projects"><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">方法 B：文档优先（适合小型项目）</font></font></h4>
+<p><strong><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">最适合</font></font></strong><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">：较小的代码库、未知的系统或探索性变更</font></font></p>
+<ol>
+<li><strong><font dir="auto" style="vertical-align: inherit;"></font></strong><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">首先</font><strong><font dir="auto" style="vertical-align: inherit;">记录整个系统</font></strong></font></li>
+<li><strong><font dir="auto" style="vertical-align: inherit;"></font></strong><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">创建具有完整上下文的</font><strong><font dir="auto" style="vertical-align: inherit;">PRD</font></strong></font></li>
+<li><strong><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">更彻底</font></font></strong><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">——捕捉一切</font></font></li>
+</ol>
+<h3 id="approach-a-prd-first-workflow-recommended"><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">方法 A：PRD-First 工作流程（推荐）</font></font></h3>
+<h4 id="phase-1-define-requirements-first"><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">第一阶段：首先定义需求</font></font></h4>
+<p><strong><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">在 Gemini Web 中（已上传 flattened-codebase.xml）：</font></font></strong></p>
+<pre data-role="codeBlock" data-info="bash" class="language-bash bash"><code>@pm<font></font>
+*create-brownfield-prd<font></font>
+</code></pre><p><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">首相将：</font></font></p>
+<ul>
+<li><strong><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">询问您的增强</font></font></strong><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">要求</font></font></li>
+<li><strong><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">探索代码库</font></font></strong><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">以了解当前状态</font></font></li>
+<li><strong><font dir="auto" style="vertical-align: inherit;"></font></strong><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">确定需要记录的</font><strong><font dir="auto" style="vertical-align: inherit;">受影响区域</font></strong></font></li>
+<li><strong><font dir="auto" style="vertical-align: inherit;"></font></strong><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">创建具有明确范围的</font><strong><font dir="auto" style="vertical-align: inherit;">重点 PRD</font></strong></font></li>
+</ul>
+<p><strong><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">主要优势</font></font></strong><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">：PRD 可识别 monorepo/大型代码库的哪些部分实际上需要文档！</font></font></p>
+<h4 id="phase-2-focused-documentation"><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">第二阶段：重点文档</font></font></h4>
+<p><strong><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">仍在 Gemini Web 中，现在具有 PRD 上下文：</font></font></strong></p>
+<pre data-role="codeBlock" data-info="bash" class="language-bash bash"><code>@architect<font></font>
+*document-project<font></font>
+</code></pre><p><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">架构师将：</font></font></p>
+<ul>
+<li><strong><font dir="auto" style="vertical-align: inherit;"></font></strong><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">如果没有提供 PRD，</font><strong><font dir="auto" style="vertical-align: inherit;">请询问您的重点</font></strong></font></li>
+<li><strong><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">提供选项</font></font></strong><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">：创建 PRD、提供需求或描述增强功能</font></font></li>
+<li><strong><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">参考 PRD/描述</font></font></strong><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">来了解范围</font></font></li>
+<li><strong><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">关注</font></font></strong><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">PRD 或您的描述中确定的相关模块</font></font></li>
+<li><strong><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">跳过不相关的区域</font></font></strong><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">以保持文档精简</font></font></li>
+<li><strong><font dir="auto" style="vertical-align: inherit;"></font></strong><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">为所有环境</font><strong><font dir="auto" style="vertical-align: inherit;">生成一个架构文档</font></strong></font></li>
+</ul>
+<p><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">架构师创造：</font></font></p>
+<ul>
+<li><strong><font dir="auto" style="vertical-align: inherit;"></font></strong><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">一份遵循 fullstack-architecture 模板的</font><strong><font dir="auto" style="vertical-align: inherit;">综合架构文档</font></strong></font></li>
+<li><strong><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">涵盖所有系统</font></font></strong><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">方面</font></font></li>
+<li><strong><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">轻松复制并保存</font></font></strong><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">为</font></font><code>docs/architecture.md</code></li>
+<li><strong><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">如果需要，可以稍后</font></font></strong><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">在 IDE 中进行分片</font></font></li>
+</ul>
+<p><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">例如，如果您说“将支付处理添加到用户服务”：</font></font></p>
+<ul>
+<li><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">仅文档：用户服务、API 端点、数据库模式、支付集成</font></font></li>
+<li><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">创建集中源树，仅显示与付款相关的代码路径</font></font></li>
+<li><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">跳过：管理面板、报告模块、不相关的微服务</font></font></li>
+</ul>
+<h3 id="approach-b-document-first-workflow"><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">方法 B：文档优先工作流程</font></font></h3>
+<h4 id="phase-1-document-the-existing-system"><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">第一阶段：记录现有系统</font></font></h4>
+<p><strong><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">最佳方法 - 具有 1M+ 上下文的 Gemini Web</font></font></strong><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">：</font></font></p>
+<ol>
+<li><strong><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">前往 Gemini 网站</font></font></strong><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">( </font></font><a href="http://gemini.google.com/"><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">gemini.google.com</font></font></a><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;"> )</font></font></li>
+<li><strong><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">上传您的项目</font></font></strong><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">：
+</font></font><ul>
+<li><strong><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">选项 A</font></font></strong><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">：直接粘贴你的 GitHub 仓库 URL</font></font></li>
+<li><strong><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">选项 B</font></font></strong><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">：上传您的 flattened-codebase.xml 文件</font></font></li>
+</ul>
+</li>
+<li><strong><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">加载架构师代理</font></font></strong><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">：上传</font></font><code>dist/agents/architect.txt</code></li>
+<li><strong><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">运行文档</font></font></strong><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">：类型</font></font><code>*document-project</code></li>
+</ol>
+<p><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">架构师将生成所有事物的综合文档。</font></font></p>
+<h4 id="phase-2-plan-your-enhancement"><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">第二阶段：规划你的改进</font></font></h4>
+<h5 id="option-a-full-brownfield-workflow-recommended-for-major-changes"><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">选项 A：完整的项目二开工作流程（建议用于重大变更）</font></font></h5>
+<p><strong><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">1. 创建 二开项目PRD</font></font></strong><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">：</font></font></p>
+<pre data-role="codeBlock" data-info="bash" class="language-bash bash"><code>@pm<font></font>
+*create-brownfield-prd<font></font>
+</code></pre><p><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">PM 代理将：</font></font></p>
+<ul>
+<li><strong><font dir="auto" style="vertical-align: inherit;"></font></strong><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">分析第一阶段的</font><strong><font dir="auto" style="vertical-align: inherit;">现有文档</font></strong></font></li>
+<li><strong><font dir="auto" style="vertical-align: inherit;"></font></strong><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">向您</font><strong><font dir="auto" style="vertical-align: inherit;">索取具体的增强细节</font></strong></font></li>
+<li><strong><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">评估复杂性</font></font></strong><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">并推荐方法</font></font></li>
+<li><strong><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">创建史诗/故事结构</font></font></strong><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">以增强效果</font></font></li>
+<li><strong><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">识别风险和整合点</font></font></strong></li>
+</ul>
+<p><strong><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">PM代理如何获取项目背景</font></font></strong><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">：</font></font></p>
+<ul>
+<li><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">在 Gemini Web 中：已经拥有第一阶段文档中的完整项目上下文</font></font></li>
+<li><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">在 IDE 中：会询问“请提供现有项目文档的路径”</font></font></li>
+</ul>
+<p><strong><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">您将遇到的关键提示</font></font></strong><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">：</font></font></p>
+<ul>
+<li><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">“您想添加什么特定的增强功能或特性？”</font></font></li>
+<li><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">“是否有任何现有系统或 API 需要与之集成？”</font></font></li>
+<li><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">“我们必须尊重的关键限制是什么？”</font></font></li>
+<li><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">“你的时间表和团队规模是多少？”</font></font></li>
+</ul>
+<p><strong><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">2. 创建项目二开架构</font></font></strong><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">：</font></font></p>
+<pre data-role="codeBlock" data-info="bash" class="language-bash bash"><code>@architect<font></font>
+*create-brownfield-architecture<font></font>
+</code></pre><p><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">架构师将：</font></font></p>
+<ul>
+<li><strong><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">回顾项目二开珠三角</font></font></strong></li>
+<li><strong><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">设计整合策略</font></font></strong></li>
+<li><strong><font dir="auto" style="vertical-align: inherit;"></font></strong><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">如果需要，</font><strong><font dir="auto" style="vertical-align: inherit;">规划迁移方法</font></strong></font></li>
+<li><strong><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">识别技术风险</font></font></strong></li>
+<li><strong><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">定义兼容性要求</font></font></strong></li>
+</ul>
+<h5 id="option-b-quick-enhancement-for-focused-changes"><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">选项 B：快速增强（针对重点更改）</font></font></h5>
+<p><strong><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">对于没有完整 PRD 的单个 Epic</font></font></strong><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">：</font></font></p>
+<pre data-role="codeBlock" data-info="bash" class="language-bash bash"><code>@pm<font></font>
+*create-brownfield-epic<font></font>
+</code></pre><p><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">使用情况：</font></font></p>
+<ul>
+<li><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">增强功能定义明确且独立</font></font></li>
+<li><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">现有文档非常全面</font></font></li>
+<li><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">更改不会影响多个系统</font></font></li>
+<li><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">您需要快速周转</font></font></li>
+</ul>
+<p><strong><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">对于单层故事</font></font></strong><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">：</font></font></p>
+<pre data-role="codeBlock" data-info="bash" class="language-bash bash"><code>@pm<font></font>
+*create-brownfield-story<font></font>
+</code></pre><p><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">使用情况：</font></font></p>
+<ul>
+<li><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">错误修复或微小功能</font></font></li>
+<li><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">非常孤立的变化</font></font></li>
+<li><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">无架构影响</font></font></li>
+<li><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">清晰的实施路径</font></font></li>
+</ul>
+<h3 id="phase-3-validate-planning-artifacts"><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">第 3 阶段：验证规划成果</font></font></h3>
+<pre data-role="codeBlock" data-info="bash" class="language-bash bash"><code>@po<font></font>
+*execute-checklist-po<font></font>
+</code></pre><p><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">采购订单确保：</font></font></p>
+<ul>
+<li><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">与现有系统的兼容性</font></font></li>
+<li><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">没有计划进行重大更改</font></font></li>
+<li><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">已实施风险缓解策略</font></font></li>
+<li><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">清晰的整合方法</font></font></li>
+</ul>
+<h3 id="phase-4-save-and-shard-documents"><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">阶段 4：保存和分片文档</font></font></h3>
+<ol>
+<li>
+<p><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">将您的 PRD 和架构保存为：</font></font><br><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">
+docs/prd.md </font></font><br><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">
+docs/architecture.md </font></font><br><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">
+（注意：如果管理多个版本，您可以选择在前缀中添加“brownfield-”）</font></font></p>
+</li>
+<li>
+<p><font dir="auto" style="vertical-align: inherit;"></font><br><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">
+在您的 IDE 中</font><font dir="auto" style="vertical-align: inherit;">对文档进行分片</font></font></p>
+<pre data-role="codeBlock" data-info="bash" class="language-bash bash"><code>@po<font></font>
+shard docs/prd.md<font></font>
+</code></pre><pre data-role="codeBlock" data-info="bash" class="language-bash bash"><code>@po<font></font>
+shard docs/architecture.md<font></font>
+</code></pre></li>
+</ol>
+<h2 id="brownfield-best-practices"><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">项目二开最佳实践</font></font></h2>
+<h3 id="1-always-document-first"><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">1. 始终先记录</font></font></h3>
+<p><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">即使您认为您了解代码库：</font></font></p>
+<ul>
+<li><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">运行</font></font><code>document-project</code><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">以捕获当前状态</font></font></li>
+<li><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">人工智能代理需要这种背景</font></font></li>
+<li><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">发现未记录的模式</font></font></li>
+</ul>
+<h3 id="2-respect-existing-patterns"><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">2.尊重现有模式</font></font></h3>
+<p><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">项目二开模板专门寻找：</font></font></p>
+<ul>
+<li><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">当前的编码约定</font></font></li>
+<li><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">现有的架构模式</font></font></li>
+<li><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">技术限制</font></font></li>
+<li><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">团队偏好</font></font></li>
+</ul>
+<h3 id="3-plan-for-gradual-rollout"><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">3. 逐步推广计划</font></font></h3>
+<p><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">项目二开改造应该：</font></font></p>
+<ul>
+<li><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">支持功能标志</font></font></li>
+<li><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">规划回滚策略</font></font></li>
+<li><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">包含迁移脚本</font></font></li>
+<li><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">保持向后兼容性</font></font></li>
+</ul>
+<h3 id="4-test-integration-thoroughly"><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">4. 彻底测试集成</font></font></h3>
+<h4 id="why-the-test-architect-is-critical-for-brownfield"><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">为什么测试架构师对于 项目二开 至关重要</font></font></h4>
+<p><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">在二开项目中，测试架构师（Quinn）会成为您的安全网，防止破坏现有功能。与新建项目不同，二开项目需要仔细验证，确保新的变更不会破坏现有功能的稳定性。</font></font></p>
+<h4 id="brownfield-specific-testing-challenges"><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">二开项目特定的测试挑战</font></font></h4>
+<p><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">测试架构师解决了独特的项目二开复杂性：</font></font></p>
+<table>
+<thead>
+<tr>
+<th><strong><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">挑战</font></font></strong></th>
+<th><strong><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">测试架构师如何提供帮助</font></font></strong></th>
+<th><strong><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">命令</font></font></strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">回归风险</font></font></strong></td>
+<td><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">确定哪些现有功能可能会中断</font></font></td>
+<td><code>*risk</code></td>
+</tr>
+<tr>
+<td><strong><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">遗留依赖项</font></font></strong></td>
+<td><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">映射集成点和隐藏依赖项</font></font></td>
+<td><code>*trace</code></td>
+</tr>
+<tr>
+<td><strong><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">性能下降</font></font></strong></td>
+<td><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">验证现有流量没有减慢</font></font></td>
+<td><code>*nfr</code></td>
+</tr>
+<tr>
+<td><strong><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">覆盖范围差距</font></font></strong></td>
+<td><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">查找新更改涉及的未经测试的遗留代码</font></font></td>
+<td><code>*design</code></td>
+</tr>
+<tr>
+<td><strong><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">重大变化</font></font></strong></td>
+<td><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">检测 API/合同违规</font></font></td>
+<td><code>*review</code></td>
+</tr>
+<tr>
+<td><strong><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">移民安全</font></font></strong></td>
+<td><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">验证数据转换和回滚计划</font></font></td>
+<td><code>*risk</code><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">+</font></font><code>*review</code></td>
+</tr>
+</tbody>
+</table>
+<h4 id="complete-test-architect-workflow-for-brownfield"><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">完整的 二开项目 测试架构师工作流程</font></font></h4>
+<h5 id="stage-1-before-development-risk--strategy"><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">第一阶段：开发前（风险与战略）</font></font></h5>
+<p><strong><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">对于二开项目至关重要 - 首先运行这些：</font></font></strong></p>
+<pre data-role="codeBlock" data-info="bash" class="language-bash bash"><code><span class="token comment"># 1. RISK ASSESSMENT (Run IMMEDIATELY after story creation)</span>
+@qa *risk <span class="token punctuation">{</span>brownfield-story<span class="token punctuation">}</span>
+<span class="token comment"># Identifies: Legacy dependencies, breaking changes, integration points</span>
+<span class="token comment"># Output: docs/qa/assessments/{epic}.{story}-risk-{YYYYMMDD}.md</span>
+<span class="token comment"># Brownfield Focus:</span>
+<span class="token comment">#   - Regression probability scoring</span>
+<span class="token comment">#   - Affected downstream systems</span>
+<span class="token comment">#   - Data migration risks</span>
+<span class="token comment">#   - Rollback complexity</span><font></font>
+<font></font>
+<span class="token comment"># 2. TEST DESIGN (After risk assessment)</span>
+@qa *design <span class="token punctuation">{</span>brownfield-story<span class="token punctuation">}</span>
+<span class="token comment"># Creates: Regression test strategy + new feature tests</span>
+<span class="token comment"># Output: docs/qa/assessments/{epic}.{story}-test-design-{YYYYMMDD}.md</span>
+<span class="token comment"># Brownfield Focus:</span>
+<span class="token comment">#   - Existing functionality that needs regression tests</span>
+<span class="token comment">#   - Integration test requirements</span>
+<span class="token comment">#   - Performance benchmarks to maintain</span>
+<span class="token comment">#   - Feature flag test scenarios</span>
+</code></pre><h5 id="stage-2-during-development-continuous-validation"><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">第二阶段：开发期间（持续验证）</font></font></h5>
+<p><strong><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">编码时监控集成健康状况：</font></font></strong></p>
+<pre data-role="codeBlock" data-info="bash" class="language-bash bash"><code><span class="token comment"># 3. REQUIREMENTS TRACING (Mid-development checkpoint)</span>
+@qa *trace <span class="token punctuation">{</span>brownfield-story<span class="token punctuation">}</span>
+<span class="token comment"># Maps: New requirements + existing functionality preservation</span>
+<span class="token comment"># Output: docs/qa/assessments/{epic}.{story}-trace-{YYYYMMDD}.md</span>
+<span class="token comment"># Brownfield Focus:</span>
+<span class="token comment">#   - Existing features that must still work</span>
+<span class="token comment">#   - New/old feature interactions</span>
+<span class="token comment">#   - API contract preservation</span>
+<span class="token comment">#   - Missing regression test coverage</span><font></font>
+<font></font>
+<span class="token comment"># 4. NFR VALIDATION (Before considering "done")</span>
+@qa *nfr <span class="token punctuation">{</span>brownfield-story<span class="token punctuation">}</span>
+<span class="token comment"># Validates: Performance, security, reliability unchanged</span>
+<span class="token comment"># Output: docs/qa/assessments/{epic}.{story}-nfr-{YYYYMMDD}.md</span>
+<span class="token comment"># Brownfield Focus:</span>
+<span class="token comment">#   - Performance regression detection</span>
+<span class="token comment">#   - Security implications of integrations</span>
+<span class="token comment">#   - Backward compatibility validation</span>
+<span class="token comment">#   - Load/stress on legacy components</span>
+</code></pre><h5 id="stage-3-code-review-deep-integration-analysis"><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">第三阶段：代码审查（深度集成分析）</font></font></h5>
+<p><strong><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">项目二开评审：</font></font></strong></p>
+<pre data-role="codeBlock" data-info="bash" class="language-bash bash"><code><span class="token comment"># 5. FULL REVIEW (When development complete)</span>
+@qa *review <span class="token punctuation">{</span>brownfield-story<span class="token punctuation">}</span>
+<span class="token comment"># Performs: Deep analysis + active refactoring</span>
+<span class="token comment"># Outputs:</span>
+<span class="token comment">#   - QA Results in story file</span>
+<span class="token comment">#   - Gate file: docs/qa/gates/{epic}.{story}-{slug}.yml</span>
+</code></pre><p><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">该评论具体分析：</font></font></p>
+<ul>
+<li><strong><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">API 重大变更</font></font></strong><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">：验证所有现有合同的维护情况</font></font></li>
+<li><strong><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">数据迁移安全</font></font></strong><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">：检查转换逻辑和回滚程序</font></font></li>
+<li><strong><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">绩效回归</font></font></strong><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">：与基线指标进行比较</font></font></li>
+<li><strong><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">集成点</font></font></strong><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">：使用遗留代码验证所有接触点</font></font></li>
+<li><strong><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">功能标志逻辑</font></font></strong><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">：确保正确的切换行为</font></font></li>
+<li><strong><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">依赖影响</font></font></strong><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">：地图影响下游系统</font></font></li>
+</ul>
+<h5 id="stage-4-post-review-gate-updates"><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">第四阶段：后期审查（门更新）</font></font></h5>
+<pre data-role="codeBlock" data-info="bash" class="language-bash bash"><code><span class="token comment"># 6. GATE STATUS UPDATE (After addressing issues)</span>
+@qa *gate <span class="token punctuation">{</span>brownfield-story<span class="token punctuation">}</span>
+<span class="token comment"># Updates: Quality gate decision after fixes</span>
+<span class="token comment"># Output: docs/qa/gates/{epic}.{story}-{slug}.yml</span>
+<span class="token comment"># Brownfield Considerations:</span>
+<span class="token comment">#   - May WAIVE certain legacy code issues</span>
+<span class="token comment">#   - Documents technical debt acceptance</span>
+<span class="token comment">#   - Tracks migration progress</span>
+</code></pre><h4 id="brownfield-specific-risk-scoring"><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">项目二开特定风险评分</font></font></h4>
+<p><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">测试架构师使用增强的风险评分来评估项目二开：</font></font></p>
+<table>
+<thead>
+<tr>
+<th><strong><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">风险类别</font></font></strong></th>
+<th><strong><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">项目二开因素</font></font></strong></th>
+<th><strong><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">对门的影响</font></font></strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">回归风险</font></font></strong></td>
+<td><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">集成点数×代码年龄</font></font></td>
+<td><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">分数≥9 = 不及格</font></font></td>
+</tr>
+<tr>
+<td><strong><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">数据风险</font></font></strong></td>
+<td><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">迁移复杂度×数据量</font></font></td>
+<td><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">分数≥6 = 担忧</font></font></td>
+</tr>
+<tr>
+<td><strong><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">绩效风险</font></font></strong></td>
+<td><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">当前负载 × 增加的复杂性</font></font></td>
+<td><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">分数≥6 = 担忧</font></font></td>
+</tr>
+<tr>
+<td><strong><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">兼容性风险</font></font></strong></td>
+<td><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">API 消费者 × 合同变更</font></font></td>
+<td><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">分数≥9 = 不及格</font></font></td>
+</tr>
+</tbody>
+</table>
+<h4 id="brownfield-testing-standards"><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">项目二开测试标准</font></font></h4>
+<p><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">Quinn 针对项目二开实施了额外的标准：</font></font></p>
+<ul>
+<li><strong><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">回归测试覆盖率</font></font></strong><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">：每个涉及的遗留模块都需要测试</font></font></li>
+<li><strong><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">绩效基准</font></font></strong><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">：必须维持或改进当前指标</font></font></li>
+<li><strong><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">回滚程序</font></font></strong><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">：每个变更都需要一个回滚计划</font></font></li>
+<li><strong><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">功能标志</font></font></strong><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">：切换背后的所有风险变化</font></font></li>
+<li><strong><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">集成测试</font></font></strong><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">：覆盖所有遗留接触点</font></font></li>
+<li><strong><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">合同测试</font></font></strong><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">：验证 API 兼容性</font></font></li>
+<li><strong><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">数据验证</font></font></strong><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">：迁移正确性检查</font></font></li>
+</ul>
+<h4 id="quick-reference-brownfield-test-commands"><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">快速参考：项目二开测试命令</font></font></h4>
+<table>
+<thead>
+<tr>
+<th><strong><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">设想</font></font></strong></th>
+<th><strong><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">要运行的命令</font></font></strong></th>
+<th><strong><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">命令</font></font></strong></th>
+<th><strong><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">为什么至关重要</font></font></strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">向遗留代码添加功能</font></font></strong></td>
+<td><code>*risk</code><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">→ </font></font><code>*design</code><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">→ </font></font><code>*trace</code><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">→</font></font><code>*review</code></td>
+<td><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">顺序</font></font></td>
+<td><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">首先映射所有依赖关系</font></font></td>
+</tr>
+<tr>
+<td><strong><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">API修改</font></font></strong></td>
+<td><code>*risk</code><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">→ </font></font><code>*design</code><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">→ </font></font><code>*nfr</code><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">→</font></font><code>*review</code></td>
+<td><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">顺序</font></font></td>
+<td><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">防止破坏消费者</font></font></td>
+</tr>
+<tr>
+<td><strong><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">绩效关键型变革</font></font></strong></td>
+<td><code>*nfr</code><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">尽早并经常 →</font></font><code>*review</code></td>
+<td><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">连续的</font></font></td>
+<td><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">立即发现退化现象</font></font></td>
+</tr>
+<tr>
+<td><strong><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">数据迁移</font></font></strong></td>
+<td><code>*risk</code><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">→ </font></font><code>*design</code><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">→ </font></font><code>*trace</code><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">→ </font></font><code>*review</code><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">→</font></font><code>*gate</code></td>
+<td><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">完整周期</font></font></td>
+<td><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">确保数据完整性</font></font></td>
+</tr>
+<tr>
+<td><strong><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">复杂系统中的错误修复</font></font></strong></td>
+<td><code>*risk</code><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">→ </font></font><code>*trace</code><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">→</font></font><code>*review</code></td>
+<td><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">专注</font></font></td>
+<td><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">预防副作用</font></font></td>
+</tr>
+</tbody>
+</table>
+<h4 id="integration-with-brownfield-scenarios"><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">与项目二开场景的集成</font></font></h4>
+<p><strong><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">特定场景的指导：</font></font></strong></p>
+<ol>
+<li>
+<p><strong><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">遗留代码现代化</font></font></strong></p>
+<ul>
+<li><font dir="auto" style="vertical-align: inherit;"></font><code>*risk</code><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">从映射所有依赖关系</font><font dir="auto" style="vertical-align: inherit;">开始</font></font></li>
+<li><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">用于</font></font><code>*design</code><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">规划绞杀榕方法</font></font></li>
+<li><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">经常运行</font></font><code>*trace</code><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">以确保一切顺利</font></font></li>
+<li><code>*review</code><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">重点是逐步迁移</font></font></li>
+</ul>
+</li>
+<li>
+<p><strong><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">向整体式架构添加功能</font></font></strong></p>
+<ul>
+<li><code>*risk</code><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">确定集成复杂性</font></font></li>
+<li><code>*design</code><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">制定隔离策略</font></font></li>
+<li><code>*nfr</code><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">监控性能影响</font></font></li>
+<li><code>*review</code><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">验证整体结构无退化</font></font></li>
+</ul>
+</li>
+<li>
+<p><strong><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">微服务提取</font></font></strong></p>
+<ul>
+<li><code>*risk</code><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">地图服务边界</font></font></li>
+<li><code>*trace</code><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">确保功能保存</font></font></li>
+<li><code>*nfr</code><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">验证网络开销是否可接受</font></font></li>
+<li><code>*gate</code><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">文件接受的权衡</font></font></li>
+</ul>
+</li>
+<li>
+<p><strong><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">数据库架构更改</font></font></strong></p>
+<ul>
+<li><code>*risk</code><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">评估迁移复杂性</font></font></li>
+<li><code>*design</code><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">计划向后兼容的方法</font></font></li>
+<li><code>*trace</code><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">映射所有受影响的查询</font></font></li>
+<li><code>*review</code><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">验证迁移安全性</font></font></li>
+</ul>
+</li>
+</ol>
+<h3 id="5-communicate-changes"><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">5. 传达变化</font></font></h3>
+<p><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">文档：</font></font></p>
+<ul>
+<li><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">发生了什么变化以及为什么</font></font></li>
+<li><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">迁移说明</font></font></li>
+<li><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">引入新模式</font></font></li>
+<li><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">弃用通知</font></font></li>
+</ul>
+<h2 id="common-brownfield-scenarios"><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">常见的二开项目场景</font></font></h2>
+<h3 id="scenario-1-adding-a-new-feature"><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">场景 1：添加新功能</font></font></h3>
+<ol>
+<li><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">记录现有系统</font></font></li>
+<li><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">打造项目二开珠三角 聚焦一体化</font></font></li>
+<li><strong><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">测试架构师早期参与</font></font></strong><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">：
+</font></font><ul>
+<li><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">运行</font></font><code>@qa *risk</code><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">草稿故事以识别整合风险</font></font></li>
+<li><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">用于</font></font><code>@qa *design</code><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">规划回归测试策略</font></font></li>
+</ul>
+</li>
+<li><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">架构强调兼容性</font></font></li>
+<li><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">故事包括具有测试要求的集成任务</font></font></li>
+<li><strong><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">开发过程中</font></font></strong><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">：
+</font></font><ul>
+<li><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">开发人员运行</font></font><code>@qa *trace</code><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">以验证覆盖范围</font></font></li>
+<li><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">用于</font></font><code>@qa *nfr</code><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">监控性能影响</font></font></li>
+</ul>
+</li>
+<li><strong><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">审查阶段</font></font></strong><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">：</font></font><code>@qa *review</code><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">验证集成安全性</font></font></li>
+</ol>
+<h3 id="scenario-2-modernizing-legacy-code"><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">场景 2：对遗留代码进行现代化改造</font></font></h3>
+<ol>
+<li><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">广泛的文档阶段</font></font></li>
+<li><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">PRD包括移民战略</font></font></li>
+<li><strong><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">测试架构师策略规划</font></font></strong><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">：
+</font></font><ul>
+<li><code>@qa *risk</code><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">评估现代化的复杂性</font></font></li>
+<li><code>@qa *design</code><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">计划并行测试方法</font></font></li>
+</ul>
+</li>
+<li><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">架构规划逐渐过渡（绞杀榕图案）</font></font></li>
+<li><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">故事遵循渐进式现代化：
+</font></font><ul>
+<li><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">对未触及的遗留代码进行回归测试</font></font></li>
+<li><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">新/旧边界的集成测试</font></font></li>
+<li><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">每个阶段的绩效基准</font></font></li>
+</ul>
+</li>
+<li><strong><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">持续验证</font></font></strong><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">：</font></font><code>@qa *trace</code><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">每次增量后运行</font></font></li>
+<li><strong><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">门管理</font></font></strong><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">：用于</font></font><code>@qa *gate</code><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">跟踪技术债务接受情况</font></font></li>
+</ol>
+<h3 id="scenario-3-bug-fix-in-complex-system"><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">场景3：复杂系统中的错误修复</font></font></h3>
+<ol>
+<li><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">记录相关子系统</font></font></li>
+<li><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">用于</font></font><code>create-brownfield-story</code><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">重点修复</font></font></li>
+<li><strong><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">测试架构师风险评估</font></font></strong><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">：运行</font></font><code>@qa *risk</code><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">以识别潜在的副作用</font></font></li>
+<li><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">包括</font></font><code>@qa *design</code><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">输出中的回归测试要求</font></font></li>
+<li><strong><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">修复期间</font></font></strong><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">：用于</font></font><code>@qa *trace</code><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">映射受影响的功能</font></font></li>
+<li><strong><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">提交之前</font></font></strong><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">：运行</font></font><code>@qa *review</code><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">进行全面验证</font></font></li>
+<li><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">测试架构师使用以下方法验证没有副作用：
+</font></font><ul>
+<li><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">副作用分析的风险分析（概率×影响评分）</font></font></li>
+<li><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">跟踪矩阵以确保修复不会破坏相关功能</font></font></li>
+<li><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">NFR 评估以验证性能/安全性是否保持不变</font></font></li>
+<li><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">门决策文件修复安全</font></font></li>
+</ul>
+</li>
+</ol>
+<h3 id="scenario-4-api-integration"><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">场景 4：API 集成</font></font></h3>
+<ol>
+<li><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">记录现有的 API 模式</font></font></li>
+<li><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">PRD 定义集成要求</font></font></li>
+<li><strong><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">测试架构师合同分析</font></font></strong><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">：
+</font></font><ul>
+<li><code>@qa *risk</code><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">识别突破性变革潜力</font></font></li>
+<li><code>@qa *design</code><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">创建合同测试策略</font></font></li>
+</ul>
+</li>
+<li><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">架构确保一致的模式</font></font></li>
+<li><strong><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">API 测试重点</font></font></strong><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">：
+</font></font><ul>
+<li><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">向后兼容性的契约测试</font></font></li>
+<li><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">新端点的集成测试</font></font></li>
+<li><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">增加负载的性能测试</font></font></li>
+</ul>
+</li>
+<li><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">故事包括 API 文档更新</font></font></li>
+<li><strong><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">验证检查点</font></font></strong><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">：
+</font></font><ul>
+<li><code>@qa *trace</code><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">映射所有 API 消费者</font></font></li>
+<li><code>@qa *nfr</code><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">验证响应时间</font></font></li>
+<li><code>@qa *review</code><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">确保没有重大变化</font></font></li>
+</ul>
+</li>
+<li><strong><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">门决策</font></font></strong><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">：记录任何已接受的重大变更以及迁移路径</font></font></li>
+</ol>
+<h2 id="troubleshooting"><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">故障排除</font></font></h2>
+<h3 id="the-ai-doesnt-understand-my-codebase"><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">“人工智能不理解我的代码库”</font></font></h3>
+<p><strong><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">解决方案</font></font></strong><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">：使用更具体的路径重新运行</font></font><code>document-project</code><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">关键文件</font></font></p>
+<h3 id="generated-plans-dont-fit-our-patterns"><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">“生成的计划不符合我们的模式”</font></font></h3>
+<p><strong><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">解决方案</font></font></strong><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">：在规划阶段之前，根据具体约定更新生成的文档</font></font></p>
+<h3 id="too-much-boilerplate-for-small-changes"><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">“小改动却有太多样板”</font></font></h3>
+<p><strong><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">解决方案</font></font></strong><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">：使用</font></font><code>create-brownfield-story</code><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">而不是完整的工作流程</font></font></p>
+<h3 id="integration-points-unclear"><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">“整合点不明确”</font></font></h3>
+<p><strong><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">解决方案</font></font></strong><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">：在 PRD 创建过程中提供更多背景信息，特别强调集成系统</font></font></p>
+<h2 id="quick-reference"><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">快速参考</font></font></h2>
+<h3 id="brownfield-specific-commands"><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">特定于项目二开的命令</font></font></h3>
+<pre data-role="codeBlock" data-info="bash" class="language-bash bash"><code><span class="token comment"># Document existing project</span><font></font>
+@architect *document-project<font></font>
+<font></font>
+<span class="token comment"># Create enhancement PRD</span><font></font>
+@pm *create-brownfield-prd<font></font>
+<font></font>
+<span class="token comment"># Create architecture with integration focus</span><font></font>
+@architect *create-brownfield-architecture<font></font>
+<font></font>
+<span class="token comment"># Quick epic creation</span><font></font>
+@pm *create-brownfield-epic<font></font>
+<font></font>
+<span class="token comment"># Single story creation</span><font></font>
+@pm *create-brownfield-story<font></font>
+</code></pre><h3 id="test-architect-commands-for-brownfield"><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">测试架构师对 二开项目 的命令</font></font></h3>
+<p><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">注意：缩写形式如下所示。完整</font><font dir="auto" style="vertical-align: inherit;">命令</font><font dir="auto" style="vertical-align: inherit;">：</font></font><code>*risk-profile</code><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">，，，</font></font><code>*test-design</code><font dir="auto" style="vertical-align: inherit;"></font><code>*nfr-assess</code><font dir="auto" style="vertical-align: inherit;"></font><code>*trace-requirements</code></p>
+<pre data-role="codeBlock" data-info="bash" class="language-bash bash"><code><span class="token comment"># BEFORE DEVELOPMENT (Planning)</span>
+@qa *risk <span class="token punctuation">{</span>story<span class="token punctuation">}</span>     <span class="token comment"># Assess regression &amp; integration risks</span>
+@qa *design <span class="token punctuation">{</span>story<span class="token punctuation">}</span>   <span class="token comment"># Plan regression + new feature tests</span><font></font>
+<font></font>
+<span class="token comment"># DURING DEVELOPMENT (Validation)</span>
+@qa *trace <span class="token punctuation">{</span>story<span class="token punctuation">}</span>    <span class="token comment"># Verify coverage of old + new</span>
+@qa *nfr <span class="token punctuation">{</span>story<span class="token punctuation">}</span>      <span class="token comment"># Check performance degradation</span><font></font>
+<font></font>
+<span class="token comment"># AFTER DEVELOPMENT (Review)</span>
+@qa *review <span class="token punctuation">{</span>story<span class="token punctuation">}</span>   <span class="token comment"># Deep integration analysis</span>
+@qa *gate <span class="token punctuation">{</span>story<span class="token punctuation">}</span>     <span class="token comment"># Update quality decision</span>
+</code></pre><h3 id="decision-tree"><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">决策树</font></font></h3>
+<pre data-role="codeBlock" data-info="text" class="language-text text"><code>Do you have a large codebase or monorepo?<font></font>
+├─ Yes → PRD-First Approach<font></font>
+│   └─ Create PRD → Document only affected areas<font></font>
+└─ No → Is the codebase well-known to you?<font></font>
+    ├─ Yes → PRD-First Approach<font></font>
+    └─ No → Document-First Approach<font></font>
+<font></font>
+Is this a major enhancement affecting multiple systems?<font></font>
+├─ Yes → Full Brownfield Workflow<font></font>
+│   └─ ALWAYS run Test Architect *risk + *design first<font></font>
+└─ No → Is this more than a simple bug fix?<font></font>
+    ├─ Yes → *create-brownfield-epic<font></font>
+    │   └─ Run Test Architect *risk for integration points<font></font>
+    └─ No → *create-brownfield-story<font></font>
+        └─ Still run *risk if touching critical paths<font></font>
+<font></font>
+Does the change touch legacy code?<font></font>
+├─ Yes → Test Architect is MANDATORY<font></font>
+│   ├─ *risk → Identify regression potential<font></font>
+│   ├─ *design → Plan test coverage<font></font>
+│   └─ *review → Validate no breakage<font></font>
+└─ No → Test Architect is RECOMMENDED<font></font>
+    └─ *review → Ensure quality standards<font></font>
+</code></pre><h2 id="conclusion"><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">结论</font></font></h2>
+<p><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">使用 BMad 方法进行项目二开开发，可在修改现有系统时提供结构化和安全性。测试架构师将成为您重要的安全网，使用风险评估、回归测试和持续验证来确保新更改不会破坏现有功能的稳定性。</font></font></p>
+<p><strong><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">二开项目成功公式：</font></font></strong></p>
+<ol>
+<li><strong><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">文档优先</font></font></strong><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">- 了解现有内容</font></font></li>
+<li><strong><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">尽早评估风险</font></font></strong><font dir="auto" style="vertical-align: inherit;"></font><code>*risk</code><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">——在编码前</font><font dir="auto" style="vertical-align: inherit;">使用测试架构师</font></font></li>
+<li><strong><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">计划测试策略</font></font></strong><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">- 设计回归+新功能测试</font></font></li>
+<li><strong><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">持续验证</font></font></strong><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">——在开发过程中检查集成健康状况</font></font></li>
+<li><strong><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">全面审查</font></font></strong><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">——提交前进行深入分析</font></font></li>
+<li><strong><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">果断门控</font></font></strong><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">- 文件质量决策</font></font></li>
+</ol>
+<p><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">请记住：</font></font><strong><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">在项目二开中，测试架构师不是可选的 - 它是防止生产中断的保险政策。</font></font></strong></p>
+
+      </div>
+    
+    
+    
+    
+    
+  
+    </body></html>

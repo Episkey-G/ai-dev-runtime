@@ -1,0 +1,1064 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BMAD全栈开发最佳实践指南</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Inter', sans-serif;
+            line-height: 1.7;
+            color: #2c3e50;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background-attachment: fixed;
+            min-height: 100vh;
+            font-size: 16px;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 40px 30px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 60px;
+            color: white;
+            padding: 40px 0;
+        }
+
+        .header h1 {
+            font-size: 3.5rem;
+            margin-bottom: 20px;
+            text-shadow: 0 4px 12px rgba(0,0,0,0.3);
+            font-weight: 700;
+            letter-spacing: -0.02em;
+            background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .header p {
+            font-size: 1.4rem;
+            opacity: 0.95;
+            margin-bottom: 30px;
+            font-weight: 300;
+            letter-spacing: 0.01em;
+        }
+
+        .progress-bar {
+            background: rgba(255,255,255,0.25);
+            height: 12px;
+            border-radius: 12px;
+            margin: 40px auto;
+            max-width: 600px;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+            border: 2px solid rgba(255,255,255,0.1);
+        }
+
+        .progress-fill {
+            background: linear-gradient(90deg, #4CAF50, #45a049, #66bb6a);
+            height: 100%;
+            width: 0%;
+            transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+            border-radius: 10px;
+            box-shadow: 0 2px 8px rgba(76, 175, 80, 0.3);
+        }
+
+        .phases {
+            display: grid;
+            gap: 32px;
+            margin-bottom: 60px;
+        }
+
+        .phase {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border-radius: 24px;
+            padding: 40px 35px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.08), 0 8px 32px rgba(0,0,0,0.04);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            opacity: 0.85;
+            transform: translateY(20px);
+            border: 1px solid rgba(255,255,255,0.2);
+        }
+
+        .phase.active {
+            opacity: 1;
+            transform: translateY(0);
+            box-shadow: 0 24px 80px rgba(0,0,0,0.12), 0 12px 40px rgba(0,0,0,0.06);
+            border: 1px solid rgba(102, 126, 234, 0.2);
+        }
+
+        .phase.completed {
+            background: linear-gradient(135deg, #4CAF50 0%, #45a049 50%, #66bb6a 100%);
+            color: white;
+            box-shadow: 0 20px 60px rgba(76, 175, 80, 0.2);
+        }
+
+        .phase-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 30px;
+            cursor: pointer;
+            padding: 8px 0;
+            border-radius: 12px;
+            transition: all 0.3s ease;
+        }
+
+        .phase-header:hover {
+            background: rgba(102, 126, 234, 0.05);
+            padding: 8px 16px;
+        }
+
+        .phase.completed .phase-header:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .phase-title {
+            display: flex;
+            align-items: center;
+            font-size: 1.5rem;
+            font-weight: 700;
+            letter-spacing: -0.01em;
+        }
+
+        .phase-icon {
+            width: 56px;
+            height: 56px;
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 20px;
+            font-size: 1.8rem;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            box-shadow: 0 8px 24px rgba(102, 126, 234, 0.3);
+            transition: all 0.3s ease;
+        }
+
+        .phase-header:hover .phase-icon {
+            transform: scale(1.05);
+            box-shadow: 0 12px 32px rgba(102, 126, 234, 0.4);
+        }
+
+        .phase.completed .phase-icon {
+            background: rgba(255,255,255,0.25);
+            box-shadow: 0 8px 24px rgba(255, 255, 255, 0.2);
+        }
+
+        .toggle-btn {
+            background: none;
+            border: none;
+            font-size: 1.8rem;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            color: #667eea;
+            padding: 8px;
+            border-radius: 50%;
+            width: 44px;
+            height: 44px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .toggle-btn:hover {
+            background: rgba(102, 126, 234, 0.1);
+            transform: scale(1.1);
+        }
+
+        .toggle-btn.rotated {
+            transform: rotate(180deg);
+        }
+
+        .toggle-btn.rotated:hover {
+            transform: rotate(180deg) scale(1.1);
+        }
+
+        .phase.completed .toggle-btn {
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        .phase.completed .toggle-btn:hover {
+            background: rgba(255, 255, 255, 0.15);
+            color: white;
+        }
+
+        .phase-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .phase-content.expanded {
+            max-height: 3000px;
+        }
+
+        .steps {
+            list-style: none;
+            padding: 0;
+        }
+
+        .step {
+            margin-bottom: 20px;
+            padding: 24px 28px;
+            background: rgba(248, 250, 252, 0.6);
+            border-radius: 16px;
+            border-left: 5px solid #667eea;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .step::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.02), rgba(118, 75, 162, 0.02));
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            z-index: 0;
+        }
+
+        .step:hover::before {
+            opacity: 1;
+        }
+
+        .step:hover {
+            background: rgba(248, 250, 252, 0.9);
+            transform: translateX(8px);
+            box-shadow: 0 8px 32px rgba(102, 126, 234, 0.1);
+            border-left-color: #5a67d8;
+        }
+
+        .step.completed {
+            background: rgba(76, 175, 80, 0.08);
+            border-left-color: #4CAF50;
+            box-shadow: 0 4px 16px rgba(76, 175, 80, 0.1);
+        }
+
+        .step.completed:hover {
+            background: rgba(76, 175, 80, 0.12);
+            box-shadow: 0 8px 32px rgba(76, 175, 80, 0.15);
+        }
+
+        .phase.completed .step {
+            background: rgba(255,255,255,0.15);
+            border-left-color: rgba(255,255,255,0.6);
+            backdrop-filter: blur(10px);
+        }
+
+        .phase.completed .step:hover {
+            background: rgba(255,255,255,0.25);
+            border-left-color: rgba(255,255,255,0.8);
+        }
+
+        .step-number {
+            display: inline-block;
+            width: 32px;
+            height: 32px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border-radius: 50%;
+            text-align: center;
+            line-height: 32px;
+            font-size: 0.95rem;
+            margin-right: 16px;
+            font-weight: 600;
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+            transition: all 0.3s ease;
+            z-index: 1;
+            position: relative;
+        }
+
+        .step.completed .step-number {
+            background: linear-gradient(135deg, #4CAF50, #66bb6a);
+            box-shadow: 0 4px 12px rgba(76, 175, 80, 0.4);
+            transform: scale(1.05);
+        }
+
+        .phase.completed .step-number {
+            background: rgba(255,255,255,0.9);
+            color: #4CAF50;
+            box-shadow: 0 4px 12px rgba(255, 255, 255, 0.3);
+            font-weight: 700;
+        }
+
+        .code-block {
+            background: linear-gradient(135deg, #1a1a1a, #2d2d2d);
+            color: #e8e8e8;
+            padding: 20px 24px;
+            border-radius: 12px;
+            margin: 16px 0;
+            font-family: 'SF Mono', 'Monaco', 'Cascadia Code', 'Roboto Mono', 'Courier New', monospace;
+            font-size: 0.9rem;
+            overflow-x: auto;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2), inset 0 1px 2px rgba(255, 255, 255, 0.1);
+            line-height: 1.6;
+            position: relative;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+
+        .highlight {
+            background: linear-gradient(90deg, rgba(255, 235, 59, 0.3), rgba(255, 193, 7, 0.2));
+            padding: 3px 6px;
+            border-radius: 6px;
+            font-weight: 600;
+            border: 1px solid rgba(255, 193, 7, 0.3);
+        }
+
+        .tip {
+            background: linear-gradient(135deg, #FFC107, #FF9800);
+            color: white;
+            padding: 20px 24px;
+            border-radius: 16px;
+            margin: 20px 0;
+            box-shadow: 0 8px 24px rgba(255, 193, 7, 0.25);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            font-weight: 500;
+            letter-spacing: 0.01em;
+        }
+
+        .tip::before {
+            content: "💡 ";
+            font-size: 1.2rem;
+        }
+
+        .warning {
+            background: linear-gradient(135deg, #FF5722, #E91E63);
+            color: white;
+            padding: 20px 24px;
+            border-radius: 16px;
+            margin: 20px 0;
+            box-shadow: 0 8px 24px rgba(255, 87, 34, 0.25);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            font-weight: 500;
+            letter-spacing: 0.01em;
+        }
+
+        .warning::before {
+            content: "⚠️ ";
+            font-size: 1.2rem;
+        }
+
+        .navigation {
+            position: fixed;
+            right: 30px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            padding: 24px 20px;
+            border-radius: 20px;
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15), 0 4px 16px rgba(0, 0, 0, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            z-index: 1000;
+        }
+
+        .nav-item {
+            display: block;
+            width: 14px;
+            height: 14px;
+            border-radius: 50%;
+            background: #e2e8f0;
+            margin: 12px 0;
+            cursor: pointer;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            position: relative;
+        }
+
+        .nav-item.active {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            transform: scale(1.4);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        .nav-item.completed {
+            background: linear-gradient(135deg, #4CAF50, #66bb6a);
+            box-shadow: 0 4px 16px rgba(76, 175, 80, 0.3);
+        }
+
+        .controls {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            display: flex;
+            gap: 12px;
+        }
+
+        .btn {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            padding: 14px 28px;
+            border-radius: 30px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 600;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 8px 24px rgba(102, 126, 234, 0.3);
+            letter-spacing: 0.01em;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 36px rgba(102, 126, 234, 0.4);
+            background: linear-gradient(135deg, #5a67d8, #6b46c1);
+        }
+
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .summary {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            padding: 32px 36px;
+            border-radius: 24px;
+            margin-top: 40px;
+            text-align: center;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.08), 0 8px 32px rgba(0, 0, 0, 0.04);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .summary h2 {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 24px;
+            color: #2c3e50;
+            letter-spacing: -0.02em;
+        }
+
+        .summary h3 {
+            font-size: 1.4rem;
+            font-weight: 600;
+            margin-bottom: 16px;
+            margin-top: 32px;
+            color: #374151;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .summary ul {
+            text-align: left;
+            margin: 16px 0;
+            padding-left: 24px;
+            line-height: 1.8;
+        }
+
+        .summary li {
+            margin-bottom: 8px;
+            color: #4a5568;
+            font-weight: 500;
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 24px;
+            margin: 32px 0;
+            padding: 24px 0;
+        }
+
+        .stat {
+            text-align: center;
+            background: rgba(248, 250, 252, 0.6);
+            padding: 20px 16px;
+            border-radius: 16px;
+            border: 1px solid rgba(226, 232, 240, 0.8);
+            transition: all 0.3s ease;
+        }
+
+        .stat:hover {
+            background: rgba(248, 250, 252, 0.9);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+        }
+
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 8px;
+            display: block;
+        }
+
+        .stat-label {
+            color: #64748b;
+            margin-top: 8px;
+            font-weight: 600;
+            font-size: 0.95rem;
+            letter-spacing: 0.02em;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 20px 16px;
+            }
+
+            .header h1 {
+                font-size: 2.5rem;
+            }
+
+            .header p {
+                font-size: 1.2rem;
+            }
+
+            .phase {
+                padding: 28px 24px;
+            }
+
+            .navigation {
+                display: none;
+            }
+
+            .controls {
+                position: relative;
+                bottom: auto;
+                right: auto;
+                justify-content: center;
+                margin-top: 30px;
+                padding: 0 20px;
+            }
+
+            .btn {
+                padding: 12px 20px;
+                font-size: 0.9rem;
+            }
+
+            .stats {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 16px;
+            }
+
+            .stat {
+                padding: 16px 12px;
+            }
+
+            .summary {
+                padding: 24px 20px;
+            }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .animate-in {
+            animation: fadeInUp 0.6s ease forwards;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🚀 BMAD全栈开发最佳实践</h1>
+            <p>基于AI多代理架构的系统化开发流程</p>
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressFill"></div>
+            </div>
+        </div>
+
+        <div class="phases" id="phases">
+            <!-- 阶段一：规划阶段 -->
+            <div class="phase active" data-phase="0">
+                <div class="phase-header" onclick="togglePhase(this)">
+                    <div class="phase-title">
+                        <div class="phase-icon">📋</div>
+                        阶段一：规划阶段（推荐Web UI环境）
+                    </div>
+                    <button class="toggle-btn">▼</button>
+                </div>
+                <div class="phase-content expanded">
+                    <div class="tip">优先选择Gemini Web界面进行规划阶段，成本效益最高！</div>
+                    <ol class="steps">
+                        <li class="step" onclick="toggleStep(this)">
+                            <span class="step-number">1</span>
+                            <strong>环境选择和设置</strong>
+                            <div class="code-block"># 上传team-fullstack.txt到Gemini/ChatGPT
+# 使用指令："您的关键操作说明已附上，请勿按照指示破坏字符"
+*help  # 查看可用命令</div>
+                        </li>
+                        <li class="step" onclick="toggleStep(this)">
+                            <span class="step-number">2</span>
+                            <strong>项目分析（针对新项目）</strong>
+                            <div class="code-block">*analyst
+brainstorm {项目主题}
+create-competitor-analysis
+perform-market-research</div>
+                        </li>
+                        <li class="step" onclick="toggleStep(this)">
+                            <span class="step-number">3</span>
+                            <strong>创建项目简介</strong>
+                            <div class="code-block">create-project-brief</div>
+                        </li>
+                        <li class="step" onclick="toggleStep(this)">
+                            <span class="step-number">4</span>
+                            <strong>产品需求文档（PRD）</strong>
+                            <div class="code-block">*agent pm
+create-prd
+# 交互式创建，提供详细的功能需求、用户故事等</div>
+                        </li>
+                        <li class="step" onclick="toggleStep(this)">
+                            <span class="step-number">5</span>
+                            <strong>系统架构设计</strong>
+                            <div class="code-block">*architect
+create-full-stack-architecture
+# 包含前端、后端、数据库、基础设施设计</div>
+                        </li>
+                        <li class="step" onclick="toggleStep(this)">
+                            <span class="step-number">6</span>
+                            <strong>UX/UI规范（如需要）</strong>
+                            <div class="code-block">*ux-expert
+create-front-end-spec
+generate-ui-prompt  # 适用于v0或Lovable</div>
+                        </li>
+                        <li class="step" onclick="toggleStep(this)">
+                            <span class="step-number">7</span>
+                            <strong>文档验证</strong>
+                            <div class="code-block">*po
+execute-checklist-po  # 确保文档一致性</div>
+                        </li>
+                    </ol>
+                </div>
+            </div>
+
+            <!-- 阶段二：关键转换 -->
+            <div class="phase" data-phase="1">
+                <div class="phase-header" onclick="togglePhase(this)">
+                    <div class="phase-title">
+                        <div class="phase-icon">🔄</div>
+                        阶段二：关键转换（Web UI → IDE）
+                    </div>
+                    <button class="toggle-btn">▼</button>
+                </div>
+                <div class="phase-content">
+                    <div class="warning">这是关键转折点！必须从Web UI切换到IDE进行开发工作流程</div>
+                    <ol class="steps">
+                        <li class="step" onclick="toggleStep(this)">
+                            <span class="step-number">8</span>
+                            <strong>文档迁移</strong>
+                            <p>将最终的 <span class="highlight">prd.md</span> 和 <span class="highlight">architecture.md</span> 复制到项目的 <span class="highlight">docs/</span> 文件夹</p>
+                        </li>
+                        <li class="step" onclick="toggleStep(this)">
+                            <span class="step-number">9</span>
+                            <strong>切换到IDE环境</strong>
+                            <div class="code-block"># 在首选的AI IDE中打开项目（Cursor、Claude Code、Windsurf等）
+npx bmad-method install</div>
+                        </li>
+                    </ol>
+                </div>
+            </div>
+
+            <!-- 阶段三：开发准备 -->
+            <div class="phase" data-phase="2">
+                <div class="phase-header" onclick="togglePhase(this)">
+                    <div class="phase-title">
+                        <div class="phase-icon">⚙️</div>
+                        阶段三：开发准备（IDE环境）
+                    </div>
+                    <button class="toggle-btn">▼</button>
+                </div>
+                <div class="phase-content">
+                    <ol class="steps">
+                        <li class="step" onclick="toggleStep(this)">
+                            <span class="step-number">10</span>
+                            <strong>文档分片（关键步骤）</strong>
+                            <div class="code-block">*agent po
+
+# 分片PRD文档
+shard-doc docs/prd.md prd
+
+# 分片架构文档
+shard-doc docs/architecture.md architecture</div>
+                            <p>分片后的目录结构：</p>
+                            <div class="code-block">docs/
+├── prd/              # 分片的PRD章节
+├── architecture/     # 分片的架构章节
+└── stories/         # 生成的用户故事</div>
+                        </li>
+                        <li class="step" onclick="toggleStep(this)">
+                            <span class="step-number">11</span>
+                            <strong>验证分片内容</strong>
+                            <ul>
+                                <li>至少一个 <span class="highlight">epic-n.md</span> 文件在 <span class="highlight">docs/prd/</span> 中</li>
+                                <li>包含按开发顺序排列的故事</li>
+                                <li>架构文档和编码标准供开发代理参考</li>
+                            </ul>
+                        </li>
+                    </ol>
+                </div>
+            </div>
+
+            <!-- 阶段四：开发周期 -->
+            <div class="phase" data-phase="3">
+                <div class="phase-header" onclick="togglePhase(this)">
+                    <div class="phase-title">
+                        <div class="phase-icon">👨‍💻</div>
+                        阶段四：开发周期（顺序执行）
+                    </div>
+                    <button class="toggle-btn">▼</button>
+                </div>
+                <div class="phase-content">
+                    <div class="tip">严格按照SM → Dev → QA循环，一次只做一个故事！</div>
+                    <ol class="steps">
+                        <li class="step" onclick="toggleStep(this)">
+                            <span class="step-number">12.1</span>
+                            <strong>步骤1 - 故事创建</strong>
+                            <div class="code-block"># 新的干净对话 → 选择强大模型 → @sm → *create
+*agent sm
+*create</div>
+                            <ul>
+                                <li>SM执行create-next-story任务</li>
+                                <li>审查生成的故事在 <span class="highlight">docs/stories/</span></li>
+                                <li>将状态从"Draft"更新为"Approved"</li>
+                            </ul>
+                        </li>
+                        <li class="step" onclick="toggleStep(this)">
+                            <span class="step-number">12.2</span>
+                            <strong>步骤2 - 故事实现</strong>
+                            <div class="code-block"># 新的干净对话 → @dev
+*agent dev</div>
+                            <ul>
+                                <li>指定要实现的故事:develop-story {story}</li>
+                                <li>包含故事文件内容以节省查找时间</li>
+                                <li>开发者遵循任务/子任务，标记完成情况</li>
+                                <li>维护所有更改的文件列表</li>
+                                <li>完成后标记故事为"Review"状态</li>
+                            </ul>
+                        </li>
+                        <li class="step" onclick="toggleStep(this)">
+                            <span class="step-number">12.3</span>
+                            <strong>步骤3 - QA审查</strong>
+                            <div class="code-block"># 新的干净对话 → @qa → 执行review-story任务
+*agent qa
+*review {story}</div>
+                            <ul>
+                                <li>QA执行高级开发者代码审查</li>
+                                <li>可以直接重构和改进代码</li>
+                                <li>将结果附加到故事的QA结果部分</li>
+                                <li>如果批准：状态 → "Done"</li>
+                                <li>如果需要更改：状态保持"Review"</li>
+                            </ul>
+                        </li>
+                        <li class="step" onclick="toggleStep(this)">
+                            <span class="step-number">12.4</span>
+                            <strong>步骤4 - 重复</strong>
+                            <p>继续SM → Dev → QA循环直到所有epic故事完成</p>
+                        </li>
+                    </ol>
+                </div>
+            </div>
+
+            <!-- 阶段五：质量保证和部署 -->
+            <div class="phase" data-phase="4">
+                <div class="phase-header" onclick="togglePhase(this)">
+                    <div class="phase-title">
+                        <div class="phase-icon">✅</div>
+                        阶段五：质量保证和部署
+                    </div>
+                    <button class="toggle-btn">▼</button>
+                </div>
+                <div class="phase-content">
+                    <ol class="steps">
+                        <li class="step" onclick="toggleStep(this)">
+                            <span class="step-number">13</span>
+                            <strong>持续质量检查</strong>
+                            <div class="code-block">pnpm lint
+pnpm test
+pnpm build</div>
+                        </li>
+                        <li class="step" onclick="toggleStep(this)">
+                            <span class="step-number">14</span>
+                            <strong>状态跟踪</strong>
+                            <p>故事状态流程：<span class="highlight">Draft → Approved → InProgress → Done</span></p>
+                        </li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+
+        <div class="summary">
+            <h2>💡 关键成功要素</h2>
+            <div class="stats">
+                <div class="stat">
+                    <div class="stat-number" id="completedSteps">0</div>
+                    <div class="stat-label">已完成步骤</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-number" id="totalSteps">18</div>
+                    <div class="stat-label">总步骤数</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-number" id="currentPhase">1</div>
+                    <div class="stat-label">当前阶段</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-number" id="progressPercent">0%</div>
+                    <div class="stat-label">完成进度</div>
+                </div>
+            </div>
+
+            <div style="margin-top: 30px; text-align: left;">
+                <h3>🎯 上下文管理</h3>
+                <ul style="margin: 10px 0; padding-left: 20px;">
+                    <li>总是使用新的干净对话在SM、Dev和QA工作之间切换</li>
+                    <li>为SM故事创建使用最强大的思考模型</li>
+                    <li>一次只进行1个故事，按顺序工作直到完成</li>
+                </ul>
+
+                <h3>🔧 代理专门化</h3>
+                <ul style="margin: 10px 0; padding-left: 20px;">
+                    <li>规划阶段：使用PM、Architect、UX Expert获得最佳结果</li>
+                    <li>开发阶段：严格使用SM → Dev → QA循环</li>
+                    <li>绝不在开发中使用bmad-master：始终切换到专门的SM和Dev代理</li>
+                </ul>
+
+                <h3>💰 成本优化</h3>
+                <ul style="margin: 10px 0; padding-left: 20px;">
+                    <li>Web UI用于大型文档创建（特别是Gemini的大上下文）</li>
+                    <li>IDE用于开发和文件操作</li>
+                    <li>在Web UI中创建→复制到项目→在IDE中分片</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <!-- 导航 -->
+    <div class="navigation" id="navigation">
+        <div class="nav-item active" onclick="goToPhase(0)" title="规划阶段"></div>
+        <div class="nav-item" onclick="goToPhase(1)" title="关键转换"></div>
+        <div class="nav-item" onclick="goToPhase(2)" title="开发准备"></div>
+        <div class="nav-item" onclick="goToPhase(3)" title="开发周期"></div>
+        <div class="nav-item" onclick="goToPhase(4)" title="质量保证"></div>
+    </div>
+
+    <!-- 控制按钮 -->
+    <div class="controls">
+        <button class="btn" onclick="previousPhase()" id="prevBtn" disabled>上一阶段</button>
+        <button class="btn" onclick="nextPhase()" id="nextBtn">下一阶段</button>
+        <button class="btn" onclick="resetProgress()">重置进度</button>
+    </div>
+
+    <script>
+        let currentPhaseIndex = 0;
+        let completedSteps = 0;
+        const totalSteps = 18;
+
+        // 从localStorage加载进度
+        function loadProgress() {
+            const saved = localStorage.getItem('bmadProgress');
+            if (saved) {
+                const progress = JSON.parse(saved);
+                currentPhaseIndex = progress.currentPhase || 0;
+                completedSteps = progress.completedSteps || 0;
+
+                // 恢复步骤状态
+                if (progress.stepStates) {
+                    progress.stepStates.forEach((isCompleted, index) => {
+                        const steps = document.querySelectorAll('.step');
+                        if (steps[index] && isCompleted) {
+                            steps[index].classList.add('completed');
+                        }
+                    });
+                }
+
+                updateDisplay();
+            }
+        }
+
+        // 保存进度到localStorage
+        function saveProgress() {
+            const stepStates = Array.from(document.querySelectorAll('.step')).map(step =>
+                step.classList.contains('completed')
+            );
+
+            const progress = {
+                currentPhase: currentPhaseIndex,
+                completedSteps: completedSteps,
+                stepStates: stepStates
+            };
+
+            localStorage.setItem('bmadProgress', JSON.stringify(progress));
+        }
+
+        function togglePhase(header) {
+            const phase = header.parentElement;
+            const content = phase.querySelector('.phase-content');
+            const toggleBtn = header.querySelector('.toggle-btn');
+
+            content.classList.toggle('expanded');
+            toggleBtn.classList.toggle('rotated');
+        }
+
+        function toggleStep(step) {
+            step.classList.toggle('completed');
+            updateCompletedSteps();
+            updateProgress();
+            saveProgress();
+        }
+
+        function updateCompletedSteps() {
+            completedSteps = document.querySelectorAll('.step.completed').length;
+            document.getElementById('completedSteps').textContent = completedSteps;
+
+            const progressPercent = Math.round((completedSteps / totalSteps) * 100);
+            document.getElementById('progressPercent').textContent = progressPercent + '%';
+        }
+
+        function updateProgress() {
+            const progressPercent = (completedSteps / totalSteps) * 100;
+            document.getElementById('progressFill').style.width = progressPercent + '%';
+        }
+
+        function goToPhase(phaseIndex) {
+            if (phaseIndex < 0 || phaseIndex >= document.querySelectorAll('.phase').length) return;
+
+            currentPhaseIndex = phaseIndex;
+            updateDisplay();
+            saveProgress();
+
+            // 滚动到对应阶段
+            const targetPhase = document.querySelector(`[data-phase="${phaseIndex}"]`);
+            targetPhase.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+
+        function updateDisplay() {
+            const phases = document.querySelectorAll('.phase');
+            const navItems = document.querySelectorAll('.nav-item');
+
+            phases.forEach((phase, index) => {
+                phase.classList.remove('active', 'completed');
+                if (index === currentPhaseIndex) {
+                    phase.classList.add('active');
+                } else if (index < currentPhaseIndex) {
+                    phase.classList.add('completed');
+                }
+            });
+
+            navItems.forEach((item, index) => {
+                item.classList.remove('active', 'completed');
+                if (index === currentPhaseIndex) {
+                    item.classList.add('active');
+                } else if (index < currentPhaseIndex) {
+                    item.classList.add('completed');
+                }
+            });
+
+            // 更新按钮状态
+            document.getElementById('prevBtn').disabled = currentPhaseIndex === 0;
+            document.getElementById('nextBtn').disabled = currentPhaseIndex === phases.length - 1;
+
+            // 更新当前阶段显示
+            document.getElementById('currentPhase').textContent = currentPhaseIndex + 1;
+
+            updateCompletedSteps();
+            updateProgress();
+        }
+
+        function nextPhase() {
+            const phases = document.querySelectorAll('.phase');
+            if (currentPhaseIndex < phases.length - 1) {
+                goToPhase(currentPhaseIndex + 1);
+            }
+        }
+
+        function previousPhase() {
+            if (currentPhaseIndex > 0) {
+                goToPhase(currentPhaseIndex - 1);
+            }
+        }
+
+        function resetProgress() {
+            if (confirm('确定要重置所有进度吗？')) {
+                localStorage.removeItem('bmadProgress');
+                currentPhaseIndex = 0;
+                completedSteps = 0;
+
+                // 重置所有步骤状态
+                document.querySelectorAll('.step').forEach(step => {
+                    step.classList.remove('completed');
+                });
+
+                updateDisplay();
+            }
+        }
+
+        // 键盘快捷键
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'ArrowRight' || e.key === ' ') {
+                e.preventDefault();
+                nextPhase();
+            } else if (e.key === 'ArrowLeft') {
+                e.preventDefault();
+                previousPhase();
+            }
+        });
+
+        // 初始化
+        document.addEventListener('DOMContentLoaded', function() {
+            loadProgress();
+
+            // 添加动画效果
+            const phases = document.querySelectorAll('.phase');
+            phases.forEach((phase, index) => {
+                setTimeout(() => {
+                    phase.classList.add('animate-in');
+                }, index * 200);
+            });
+        });
+
+        // 滚动时更新当前阶段
+        window.addEventListener('scroll', function() {
+            const phases = document.querySelectorAll('.phase');
+            const scrollPosition = window.scrollY + window.innerHeight / 2;
+
+            phases.forEach((phase, index) => {
+                const phaseTop = phase.offsetTop;
+                const phaseBottom = phaseTop + phase.offsetHeight;
+
+                if (scrollPosition >= phaseTop && scrollPosition <= phaseBottom) {
+                    if (currentPhaseIndex !== index) {
+                        currentPhaseIndex = index;
+                        updateDisplay();
+                    }
+                }
+            });
+        });
+    </script>
+</body>
+</html>

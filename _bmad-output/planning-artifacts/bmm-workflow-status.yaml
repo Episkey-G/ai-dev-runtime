@@ -1,0 +1,35 @@
+# Workflow Status Template
+#
+# This tracks progress through BMM methodology Analysis, Planning, and Solutioning phases.
+# Implementation phase is tracked separately in sprint-status.yaml
+#
+# STATUS DEFINITIONS:
+# ==================
+# Initial Status (before completion):
+#   - required: Must be completed to progress
+#   - optional: Can be completed but not required
+#   - recommended: Strongly suggested but not required
+#   - conditional: Required only if certain conditions met (e.g., if_has_ui)
+#
+# Completion Status:
+#   - {file-path}: File created/found (e.g., "docs/product-brief.md")
+#   - skipped: Optional/conditional workflow that was skipped
+
+generated: "2026-03-06"
+project: "episkey"
+project_type: "developer_tool"
+project_level: "method"
+selected_track: "bmad-method"
+field_type: "greenfield"
+workflow_path: "_bmad/bmm/workflows/workflow-status/paths/method-greenfield.yaml"
+workflow_status:
+  brainstorm-project: "_bmad-output/planning-artifacts/product-brief-episkey-2026-03-06.md"
+  research: "_bmad-output/planning-artifacts/prd.md"
+  product-brief: "_bmad-output/planning-artifacts/product-brief-episkey-2026-03-06.md"
+  prd: "_bmad-output/planning-artifacts/prd.md"
+  create-ux-design: conditional
+  create-architecture: "_bmad-output/planning-artifacts/architecture.md"
+  create-epics-and-stories: required
+  test-design: optional
+  implementation-readiness: required
+  sprint-planning: required
