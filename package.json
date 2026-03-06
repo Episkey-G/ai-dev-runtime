@@ -20,7 +20,7 @@
     "oclif": "^4",
     "shx": "^0.3.3",
     "ts-node": "^10",
-    "typescript": "5.9.0-beta",
+    "typescript": "~5.9.3",
     "vitest": "^3"
   },
   "engines": {

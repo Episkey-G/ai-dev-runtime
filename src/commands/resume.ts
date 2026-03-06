@@ -6,8 +6,7 @@ import {outputResult} from '../cli/output.js'
 /** 从中断点恢复编排（含 preflight 校验） */
 export default class Resume extends Command {
   static override description = '从中断点恢复编排（含 preflight 校验）'
-
-  static override flags = {
+static override flags = {
     json: Flags.boolean({description: '以 JSON envelope 格式输出'}),
   }
 

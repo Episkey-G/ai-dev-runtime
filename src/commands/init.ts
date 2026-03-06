@@ -6,8 +6,7 @@ import {outputResult} from '../cli/output.js'
 /** 初始化工作区，生成零配置默认设置 */
 export default class Init extends Command {
   static override description = '初始化工作区，生成零配置默认设置'
-
-  static override flags = {
+static override flags = {
     json: Flags.boolean({description: '以 JSON envelope 格式输出'}),
   }
 

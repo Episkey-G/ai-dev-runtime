@@ -6,8 +6,7 @@ import {outputResult} from '../cli/output.js'
 /** 确定性回放事件序列 */
 export default class Replay extends Command {
   static override description = '确定性回放事件序列'
-
-  static override flags = {
+static override flags = {
     json: Flags.boolean({description: '以 JSON envelope 格式输出'}),
   }
 

@@ -6,8 +6,7 @@ import {outputResult} from '../cli/output.js'
 /** 执行跨 Agent 上下文交接 */
 export default class Handoff extends Command {
   static override description = '执行跨 Agent 上下文交接'
-
-  static override flags = {
+static override flags = {
     json: Flags.boolean({description: '以 JSON envelope 格式输出'}),
   }
 

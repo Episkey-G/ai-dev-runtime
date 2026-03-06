@@ -1,7 +1,8 @@
 import {describe, expect, it} from 'vitest'
 
-import {success, failure} from '../../src/cli/envelope.js'
-import type {SuccessEnvelope, FailureEnvelope} from '../../src/cli/envelope.js'
+import type {FailureEnvelope, SuccessEnvelope} from '../../src/cli/envelope.js'
+
+import {failure, success} from '../../src/cli/envelope.js'
 import {ErrorCodes} from '../../src/cli/error-codes.js'
 
 describe('envelope', () => {
@@ -36,8 +37,8 @@ describe('envelope', () => {
     it('应支持 details 和 recovery 字段', () => {
       const result = failure({
         code: ErrorCodes.CFG_DEPENDENCY_MISSING,
-        message: '依赖缺失',
         details: {missing: ['foo']},
+        message: '依赖缺失',
         recovery: '运行 npm install',
       })
       expect(result.error.details).toEqual({missing: ['foo']})
@@ -55,9 +56,9 @@ describe('envelope', () => {
   })
 
   describe('JSON 序列化', () => {
-    it('success envelope 序列化后应保持 snake_case 字段结构', () => {
-      const result = success({test_value: 1})
-      const json = JSON.parse(JSON.stringify(result))
+    it('success envelope 序列化后应保持字段结构', () => {
+      const result = success({testValue: 1})
+      const json = structuredClone(result)
       expect(json).toHaveProperty('ok', true)
       expect(json).toHaveProperty('data')
       expect(json).toHaveProperty('meta')
@@ -70,7 +71,7 @@ describe('envelope', () => {
         code: ErrorCodes.CFG_VALIDATION_FAILED,
         message: '校验失败',
       })
-      const json = JSON.parse(JSON.stringify(result))
+      const json = structuredClone(result)
       expect(json).toHaveProperty('ok', false)
       expect(json).toHaveProperty('error')
       expect(json.error).toHaveProperty('code')

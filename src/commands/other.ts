@@ -6,8 +6,7 @@ import {outputResult} from '../cli/output.js'
 /** 提交 Gate 自定义决策（非 approve/reject） */
 export default class Other extends Command {
   static override description = '提交 Gate 自定义决策（非 approve/reject）'
-
-  static override flags = {
+static override flags = {
     json: Flags.boolean({description: '以 JSON envelope 格式输出'}),
   }
 

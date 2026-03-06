@@ -6,8 +6,7 @@ import {outputResult} from '../cli/output.js'
 /** 推进编排到下一阶段 */
 export default class Next extends Command {
   static override description = '推进编排到下一阶段'
-
-  static override flags = {
+static override flags = {
     json: Flags.boolean({description: '以 JSON envelope 格式输出'}),
   }
 

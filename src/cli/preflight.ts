@@ -4,11 +4,17 @@
  */
 
 import {execSync} from 'node:child_process'
+import {existsSync} from 'node:fs'
+import {resolve} from 'node:path'
 
-import {ErrorCodes, RecoveryActions} from './error-codes.js'
 import type {ErrorDetail} from './envelope.js'
 
+import {ErrorCodes, RecoveryActions} from './error-codes.js'
+
 const MIN_NODE_MAJOR = 24
+
+/** 关键依赖列表（必须在 node_modules 中存在） */
+const CRITICAL_DEPENDENCIES = ['@oclif/core'] as const
 
 /** 检查 Node.js 版本 */
 export function checkNodeVersion(): ErrorDetail | null {
@@ -17,8 +23,8 @@ export function checkNodeVersion(): ErrorDetail | null {
   if (major < MIN_NODE_MAJOR) {
     return {
       code: ErrorCodes.CFG_NODE_VERSION,
-      message: `Node.js 版本 ${version} 不满足最低要求 (>= ${MIN_NODE_MAJOR})`,
       details: {current: version, required: `>= ${MIN_NODE_MAJOR}`},
+      message: `Node.js 版本 ${version} 不满足最低要求 (>= ${MIN_NODE_MAJOR})`,
       recovery: RecoveryActions[ErrorCodes.CFG_NODE_VERSION],
     }
   }
@@ -40,7 +46,30 @@ export function checkNpmAvailability(): ErrorDetail | null {
   }
 }
 
+/** 检查关键依赖存在性 */
+export function checkCriticalDependencies(): ErrorDetail | null {
+  const missing: string[] = []
+
+  for (const dep of CRITICAL_DEPENDENCIES) {
+    const depPath = resolve(process.cwd(), 'node_modules', dep)
+    if (!existsSync(depPath)) {
+      missing.push(dep)
+    }
+  }
+
+  if (missing.length > 0) {
+    return {
+      code: ErrorCodes.CFG_DEPENDENCY_MISSING,
+      details: {missing},
+      message: `关键依赖缺失: ${missing.join(', ')}`,
+      recovery: RecoveryActions[ErrorCodes.CFG_DEPENDENCY_MISSING],
+    }
+  }
+
+  return null
+}
+
 /** 执行所有前置检查，返回第一个失败项 */
 export function runPreflightChecks(): ErrorDetail | null {
-  return checkNodeVersion() ?? checkNpmAvailability()
+  return checkNodeVersion() ?? checkNpmAvailability() ?? checkCriticalDependencies()
 }

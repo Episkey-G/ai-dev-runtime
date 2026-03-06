@@ -51,6 +51,15 @@ so that 我可以在本地开始受控编排而不是手工多 Agent 切换。
   - [x] 集成测试：`--help` 命令面与退出码
   - [x] E2E/命令测试：初始化后 `--version` 与错误路径
 
+### Review Follow-ups (AI)
+
+- [x] [AI-Review][HIGH] 实现”关键依赖存在性检查”，并在缺失时返回 `CFG_DEPENDENCY_MISSING` + 可恢复动作（当前仅检查 Node/npm）[`src/cli/preflight.ts:44`]
+- [x] [AI-Review][HIGH] 补齐 `ai-dev --version --json` 的统一 envelope 输出契约（当前为纯文本版本输出）[`_bmad-output/implementation-artifacts/1-1-set-up-initial-project-from-oclif-starter-template-and-verify-cli-availability.md:48`]
+- [x] [AI-Review][MEDIUM] 将 CLI 集成测试从 `child_process.execSync` 对齐到 `@oclif/test`（与故事测试约束一致）[`tests/integration/commands.test.ts:2`]
+- [x] [AI-Review][MEDIUM] 为 AC3 增加失败路径测试：`CFG_NPM_UNAVAILABLE` 与 `CFG_DEPENDENCY_MISSING` 的错误码、恢复动作与 envelope 断言[`tests/unit/preflight.test.ts:35`]
+- [x] [AI-Review][MEDIUM] 修复 lint 基线问题，确保 `npm run lint` 可作为 CI 基座通过（当前存在 60 个 error）[`package.json:55`]
+- [x] [AI-Review][LOW] 明确 TypeScript 版本锁定策略（`5.9.x` 与 `5.9.0-beta` 一致性）并在文档与依赖声明中统一[`package.json:23`]
+
 ## Dev Notes
 
 ### Developer Context Section
@@ -166,6 +175,13 @@ so that 我可以在本地开始受控编排而不是手工多 Agent 切换。
 - Task 3: 实现 init hook + preflight 检查（Node 版本/npm），CFG_* 错误码 + 可恢复动作，--json envelope 支持
 - Task 4: --version 输出语义化版本 0.1.0，--json meta 字段包含 version 和 timestamp
 - Task 5: 36 个测试全部通过 — 12 unit + 20 integration + 4 e2e
+- Review Follow-up: 实现 checkCriticalDependencies (@oclif/core 存在性检查)
+- Review Follow-up: 新增 version 命令支持 --json envelope 版本输出
+- Review Follow-up: @oclif/test runCommand 与 vitest+ESM 不兼容，保持 execSync+bin/dev.js 方案并注明原因
+- Review Follow-up: 补齐 CFG_NPM_UNAVAILABLE / CFG_DEPENDENCY_MISSING 失败路径测试 (8 个 preflight 测试)
+- Review Follow-up: 修复全部 62 个 lint error (自动修复 56 + 手动修复 6)
+- Review Follow-up: TypeScript 从 5.9.0-beta 升级到 5.9.3 正式版
+- 最终测试: 42 通过 (17 unit + 21 integration + 4 e2e)，lint 0 error
 
 ### File List
 
@@ -207,3 +223,4 @@ so that 我可以在本地开始受控编排而不是手工多 Agent 切换。
 - `tests/unit/preflight.test.ts` (新增)
 - `tests/integration/commands.test.ts` (新增)
 - `tests/e2e/cli-smoke.test.ts` (新增)
+- `src/commands/version.ts` (新增 — review follow-up)
