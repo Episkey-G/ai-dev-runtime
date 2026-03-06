@@ -4,7 +4,7 @@
  */
 
 import {constants, existsSync} from 'node:fs'
-import {access, mkdir, writeFile} from 'node:fs/promises'
+import {access, lstat, mkdir, writeFile} from 'node:fs/promises'
 import {resolve} from 'node:path'
 
 import type {ErrorDetail} from '../../cli/envelope.js'
@@ -40,6 +40,68 @@ export type InitOutcome = InitFailure | InitSuccess
 interface FileInit {
   content: string
   path: string
+}
+
+/** 检测路径是否为符号链接，返回错误结果或 null */
+async function rejectSymlink(targetPath: string): Promise<InitFailure | null> {
+  const stat = await lstat(targetPath)
+  if (stat.isSymbolicLink()) {
+    return {
+      error: {
+        code: ErrorCodes.CFG_INIT_FAILED,
+        details: {path: targetPath},
+        message: `工作区路径不允许为符号链接: ${targetPath}`,
+        recovery: '请删除符号链接后重试: rm ' + targetPath,
+      },
+      ok: false,
+    }
+  }
+
+  return null
+}
+
+/** 确保目录存在，返回 'created' | 'skipped' 或错误 */
+async function ensureDirectory(dir: string): Promise<'created' | 'skipped' | InitFailure> {
+  try {
+    const created = await mkdir(dir, {recursive: true})
+    if (created) return 'created'
+
+    const symlinkError = await rejectSymlink(dir)
+    if (symlinkError) return symlinkError
+    return 'skipped'
+  } catch (error: unknown) {
+    const fsError = error as NodeJS.ErrnoException
+    if (fsError.code === 'EEXIST' || fsError.code === 'ENOTDIR') {
+      return {
+        error: {
+          code: ErrorCodes.CFG_INIT_FAILED,
+          details: {path: dir},
+          message: `路径已存在但不是目录: ${dir}`,
+          recovery: '请删除该文件后重试: rm ' + dir,
+        },
+        ok: false,
+      }
+    }
+
+    throw error
+  }
+}
+
+/** 确保文件存在（wx 原子创建），返回 'created' | 'skipped' 或错误 */
+async function ensureFile(file: FileInit): Promise<'created' | 'skipped' | InitFailure> {
+  try {
+    await writeFile(file.path, file.content, {encoding: 'utf8', flag: 'wx'})
+    return 'created'
+  } catch (error: unknown) {
+    const fsError = error as NodeJS.ErrnoException
+    if (fsError.code === 'EEXIST') {
+      const symlinkError = await rejectSymlink(file.path)
+      if (symlinkError) return symlinkError
+      return 'skipped'
+    }
+
+    throw error
+  }
 }
 
 /**
@@ -94,29 +156,10 @@ export async function initializeWorkspace(baseDir: string): Promise<InitOutcome>
 
   try {
     for (const dir of paths.directories) {
-      try {
-        const created = await mkdir(dir, {recursive: true}) // eslint-disable-line no-await-in-loop
-        if (created) {
-          createdPaths.push(dir)
-        } else {
-          skippedPaths.push(dir)
-        }
-      } catch (error: unknown) {
-        const fsError = error as NodeJS.ErrnoException
-        if (fsError.code === 'EEXIST' || fsError.code === 'ENOTDIR') {
-          return {
-            error: {
-              code: ErrorCodes.CFG_INIT_FAILED,
-              details: {path: dir},
-              message: `路径已存在但不是目录: ${dir}`,
-              recovery: '请删除该文件后重试: rm ' + dir,
-            },
-            ok: false,
-          }
-        }
-
-        throw error
-      }
+      const dirResult = await ensureDirectory(dir) // eslint-disable-line no-await-in-loop
+      if (typeof dirResult === 'object') return dirResult
+      if (dirResult === 'created') createdPaths.push(dir)
+      else skippedPaths.push(dir)
     }
 
     const initialFiles: FileInit[] = [
@@ -125,17 +168,10 @@ export async function initializeWorkspace(baseDir: string): Promise<InitOutcome>
     ]
 
     for (const file of initialFiles) {
-      try {
-        await writeFile(file.path, file.content, {encoding: 'utf8', flag: 'wx'}) // eslint-disable-line no-await-in-loop
-        createdPaths.push(file.path)
-      } catch (error: unknown) {
-        const fsError = error as NodeJS.ErrnoException
-        if (fsError.code === 'EEXIST') {
-          skippedPaths.push(file.path)
-        } else {
-          throw error
-        }
-      }
+      const fileResult = await ensureFile(file) // eslint-disable-line no-await-in-loop
+      if (typeof fileResult === 'object') return fileResult
+      if (fileResult === 'created') createdPaths.push(file.path)
+      else skippedPaths.push(file.path)
     }
 
     const configResult = await writeDefaultConfig(paths.configFile)

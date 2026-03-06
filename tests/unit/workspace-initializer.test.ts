@@ -1,4 +1,4 @@
-import {existsSync, mkdirSync, rmSync, writeFileSync} from 'node:fs'
+import {existsSync, mkdirSync, rmSync, symlinkSync, writeFileSync} from 'node:fs'
 import {readFile} from 'node:fs/promises'
 import {tmpdir} from 'node:os'
 import {join} from 'node:path'
@@ -140,6 +140,57 @@ describe('workspace-initializer', () => {
 
       expect(result.error.code).toBe('CFG_INIT_FAILED')
       expect(result.error.message).toContain('不是目录')
+    })
+
+    it('工作区根目录为符号链接时应返回错误', async () => {
+      const paths = resolveWorkspacePaths(testDir)
+      const targetDir = join(testDir, 'real-dir')
+      mkdirSync(targetDir)
+      symlinkSync(targetDir, paths.root)
+
+      const result = await initializeWorkspace(testDir)
+
+      expect(result.ok).toBe(false)
+      if (result.ok) return
+
+      expect(result.error.code).toBe('CFG_INIT_FAILED')
+      expect(result.error.message).toContain('符号链接')
+    })
+
+    it('数据文件为符号链接时应返回错误', async () => {
+      const paths = resolveWorkspacePaths(testDir)
+      // 先正常初始化
+      await initializeWorkspace(testDir)
+      // 将 events.jsonl 替换为符号链接
+      const externalFile = join(testDir, 'external.jsonl')
+      writeFileSync(externalFile, '')
+      rmSync(paths.eventsFile)
+      symlinkSync(externalFile, paths.eventsFile)
+
+      const result = await initializeWorkspace(testDir)
+
+      expect(result.ok).toBe(false)
+      if (result.ok) return
+
+      expect(result.error.code).toBe('CFG_INIT_FAILED')
+      expect(result.error.message).toContain('符号链接')
+    })
+
+    it('配置文件为符号链接时应返回错误', async () => {
+      const paths = resolveWorkspacePaths(testDir)
+      await initializeWorkspace(testDir)
+      // 将 config.yaml 替换为符号链接
+      const externalConfig = join(testDir, 'external-config.yaml')
+      writeFileSync(externalConfig, 'custom: true')
+      rmSync(paths.configFile)
+      symlinkSync(externalConfig, paths.configFile)
+
+      const result = await initializeWorkspace(testDir)
+
+      expect(result.ok).toBe(false)
+      if (result.ok) return
+
+      expect(result.error.code).toBe('CFG_INIT_FAILED')
     })
 
     it('不存在的父目录应返回错误', async () => {

@@ -3,7 +3,7 @@
  * 负责 .ai-dev/config.yaml 首次写入，已存在则保持不变。
  */
 
-import {writeFile} from 'node:fs/promises'
+import {lstat, writeFile} from 'node:fs/promises'
 
 import {getDefaultConfig} from './defaults.js'
 
@@ -41,6 +41,7 @@ function serializeConfigYaml(): string {
 /**
  * 写入默认配置文件
  * 使用 wx flag（exclusive create）确保并发安全：文件已存在时原子失败，不覆盖。
+ * 已存在文件为符号链接时抛出错误，防止写入外部路径。
  */
 export async function writeDefaultConfig(configPath: string): Promise<ConfigWriteResult> {
   const content = serializeConfigYaml()
@@ -51,6 +52,11 @@ export async function writeDefaultConfig(configPath: string): Promise<ConfigWrit
   } catch (error: unknown) {
     const err = error as NodeJS.ErrnoException
     if (err.code === 'EEXIST') {
+      const stat = await lstat(configPath)
+      if (stat.isSymbolicLink()) {
+        throw new Error(`配置文件路径不允许为符号链接: ${configPath}`)
+      }
+
       return {status: 'kept_existing'}
     }
 
