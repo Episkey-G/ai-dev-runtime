@@ -43,8 +43,8 @@ development_status:
   1-1-set-up-initial-project-from-oclif-starter-template-and-verify-cli-availability: done
   1-2-initialize-workspace-with-zero-config-defaults: done
   1-3-view-and-update-project-orchestration-config: done
-  1-4-start-first-orchestration-from-initialized-workspace: in-progress
-  1-5-deliver-day-1-quickstart-and-migration-guide: backlog
+  1-4-start-first-orchestration-from-initialized-workspace: done
+  1-5-deliver-day-1-quickstart-and-migration-guide: in-progress
   1-6-establish-ci-cd-baseline-and-runtime-doctor-diagnostics: backlog
   epic-1-retrospective: optional
 
