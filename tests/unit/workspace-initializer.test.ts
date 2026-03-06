@@ -128,6 +128,20 @@ describe('workspace-initializer', () => {
       expect(result.error.code).toMatch(/^CFG_/)
     })
 
+    it('目录路径被普通文件占用时应返回错误', async () => {
+      const paths = resolveWorkspacePaths(testDir)
+      // 用普通文件占位 .ai-dev 路径
+      writeFileSync(paths.root, 'not a directory')
+
+      const result = await initializeWorkspace(testDir)
+
+      expect(result.ok).toBe(false)
+      if (result.ok) return
+
+      expect(result.error.code).toBe('CFG_INIT_FAILED')
+      expect(result.error.message).toContain('不是目录')
+    })
+
     it('不存在的父目录应返回错误', async () => {
       const result = await initializeWorkspace('/nonexistent/path/that/does/not/exist')
 

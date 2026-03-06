@@ -3,7 +3,7 @@
  * 负责创建 .ai-dev 目录结构与初始文件，确保幂等执行。
  */
 
-import {constants, existsSync} from 'node:fs'
+import {constants, existsSync, statSync} from 'node:fs'
 import {access, mkdir, writeFile} from 'node:fs/promises'
 import {resolve} from 'node:path'
 
@@ -95,6 +95,19 @@ export async function initializeWorkspace(baseDir: string): Promise<InitOutcome>
   try {
     for (const dir of paths.directories) {
       if (existsSync(dir)) {
+        const stat = statSync(dir)
+        if (!stat.isDirectory()) {
+          return {
+            error: {
+              code: ErrorCodes.CFG_INIT_FAILED,
+              details: {path: dir},
+              message: `路径已存在但不是目录: ${dir}`,
+              recovery: '请删除该文件后重试: rm ' + dir,
+            },
+            ok: false,
+          }
+        }
+
         skippedPaths.push(dir)
       } else {
         await mkdir(dir, {recursive: true}) // eslint-disable-line no-await-in-loop
