@@ -45,24 +45,24 @@ development_status:
   1-3-view-and-update-project-orchestration-config: done
   1-4-start-first-orchestration-from-initialized-workspace: done
   1-5-deliver-day-1-quickstart-and-migration-guide: done
-  1-6-establish-ci-cd-baseline-and-runtime-doctor-diagnostics: in-progress
+  1-6-establish-ci-cd-baseline-and-runtime-doctor-diagnostics: done
   epic-1-retrospective: optional
 
   # Epic 2: Stage-based Orchestration & Transition Control
-  epic-2: backlog
-  2-1-define-and-persist-fixed-stage-set-with-legal-transition-matrix: backlog
-  2-2-enforce-transition-guards-and-block-illegal-stage-jumps: backlog
-  2-3-generate-next-allowed-actions-and-recommendations-by-stage-rules: backlog
-  2-4-expose-current-stage-and-last-transition-result: backlog
-  2-5-record-stage-transition-events-with-reason-and-context-reference: backlog
+  epic-2: done
+  2-1-define-and-persist-fixed-stage-set-with-legal-transition-matrix: done
+  2-2-enforce-transition-guards-and-block-illegal-stage-jumps: done
+  2-3-generate-next-allowed-actions-and-recommendations-by-stage-rules: done
+  2-4-expose-current-stage-and-last-transition-result: done
+  2-5-record-stage-transition-events-with-reason-and-context-reference: done
   epic-2-retrospective: optional
 
   # Epic 3: Human Gate Governance & Decision Escalation
-  epic-3: backlog
-  3-1-define-gate-policy-model-with-required-stages-and-gate-state-machine: backlog
-  3-2-implement-approve-reject-other-gate-decision-commands-with-validation: backlog
-  3-3-trigger-escalation-path-on-repeated-reject-decisions: backlog
-  3-4-persist-gate-evidence-chain-and-auditable-decision-records: backlog
+  epic-3: done
+  3-1-define-gate-policy-model-with-required-stages-and-gate-state-machine: done
+  3-2-implement-approve-reject-other-gate-decision-commands-with-validation: done
+  3-3-trigger-escalation-path-on-repeated-reject-decisions: done
+  3-4-persist-gate-evidence-chain-and-auditable-decision-records: done
   epic-3-retrospective: optional
 
   # Epic 4: Multi-Agent Context Handoff & Adapter Routing
