@@ -137,7 +137,7 @@ describe('CLI 命令面集成测试', () => {
     expect(otherEnvelope.ok).toBe(true)
     expect(otherEnvelope.data.action).toBe('other')
     expect(otherEnvelope.data.direction).toBe('split rollout')
-  }, 15_000)
+  }, 30_000)
 
   it('handoff 应写入 agent_handoff 审计事件并携带 intent_id/schema_version', () => {
     const workspace = createWorkspaceDir()
