@@ -1,0 +1,22 @@
+{
+  "sessionId": "session_1772854084348_ix7l5r6ja",
+  "stage": "RESEARCH",
+  "fromAgent": "claude",
+  "toAgent": "codex",
+  "context": {
+    "recentEvents": [],
+    "state": {
+      "sessionId": "session_1772854084348_ix7l5r6ja",
+      "stage": "RESEARCH",
+      "lastTransition": {
+        "from": "IDLE",
+        "to": "RESEARCH",
+        "timestamp": "2026-03-07T03:28:04.348Z",
+        "reason": "初始化工作流"
+      },
+      "createdAt": "2026-03-07T03:28:03.870Z"
+    },
+    "pendingTasks": []
+  },
+  "timestamp": "2026-03-07T03:28:04.487Z"
+}

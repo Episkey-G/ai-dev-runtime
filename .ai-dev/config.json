@@ -1,0 +1,18 @@
+{
+  "version": "0.1.0",
+  "workspaceVersion": "1.0.0",
+  "defaults": {
+    "executor": "claude",
+    "deepAnalyzer": "codex",
+    "gatePolicy": [
+      "prd_freeze",
+      "architecture_freeze",
+      "high_complexity"
+    ]
+  },
+  "paths": {
+    "events": ".ai-dev/events",
+    "snapshots": ".ai-dev/snapshots",
+    "context": ".ai-dev/context"
+  }
+}
