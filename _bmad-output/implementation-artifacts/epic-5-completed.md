@@ -24,3 +24,10 @@
 ### Story 5.5: Recovery Failure Classification
 - Returns actionable error messages
 - Recovery actions provided in error responses
+
+## Tasks / Subtasks
+
+### Review Follow-ups (AI)
+
+- [x] [AI-Review][HIGH] `resume` preflight 增加 checksum chain、snapshot anchor、schema/upcaster 三类校验，失败时保持 hard-stop[`src/commands/resume.ts:1`]
+- [x] [AI-Review][HIGH] `replay` 补齐 checkpoint-based deterministic replay，禁止静默吞掉损坏事件行[`src/commands/replay.ts:1`]

@@ -2,84 +2,81 @@
  * Stage Engine - 状态机核心模块
  */
 
-import * as fs from 'node:fs'
-import * as path from 'node:path'
-
 /** 阶段定义 */
 export const STAGES = {
-  IDLE: 'IDLE',
-  RESEARCH: 'RESEARCH',
-  PLAN: 'PLAN',
-  IMPLEMENT: 'IMPLEMENT',
-  REVIEW: 'REVIEW',
   EXECUTE: 'EXECUTE',
+  IDLE: 'IDLE',
+  IMPLEMENT: 'IMPLEMENT',
+  PLAN: 'PLAN',
   RECOVER: 'RECOVER',
+  RESEARCH: 'RESEARCH',
+  REVIEW: 'REVIEW',
 } as const
 
 export type Stage = (typeof STAGES)[keyof typeof STAGES]
 
 /** 合法迁移矩阵 */
 export const LEGAL_TRANSITIONS: Record<Stage, Stage[]> = {
-  [STAGES.IDLE]: [STAGES.RESEARCH],
-  [STAGES.RESEARCH]: [STAGES.PLAN],
-  [STAGES.PLAN]: [STAGES.IMPLEMENT],
-  [STAGES.IMPLEMENT]: [STAGES.REVIEW],
-  [STAGES.REVIEW]: [STAGES.EXECUTE, STAGES.IMPLEMENT],
   [STAGES.EXECUTE]: [STAGES.IDLE, STAGES.RECOVER],
+  [STAGES.IDLE]: [STAGES.RESEARCH],
+  [STAGES.IMPLEMENT]: [STAGES.REVIEW],
+  [STAGES.PLAN]: [STAGES.IMPLEMENT],
   [STAGES.RECOVER]: [STAGES.IMPLEMENT, STAGES.REVIEW, STAGES.IDLE],
+  [STAGES.RESEARCH]: [STAGES.PLAN],
+  [STAGES.REVIEW]: [STAGES.EXECUTE, STAGES.IMPLEMENT],
 }
 
 /** 阶段元数据 */
 export interface StageMetadata {
-  name: Stage
-  description: string
   allowedActions: string[]
+  description: string
   gateRequired: boolean
+  name: Stage
 }
 
 /** 阶段元数据映射 */
 export const STAGE_METADATA: Record<Stage, StageMetadata> = {
-  IDLE: {
-    name: STAGES.IDLE,
-    description: '初始状态',
-    allowedActions: ['next'],
+  EXECUTE: {
+    allowedActions: ['next', 'handoff'],
+    description: '执行完成',
     gateRequired: false,
+    name: STAGES.EXECUTE,
   },
-  RESEARCH: {
-    name: STAGES.RESEARCH,
-    description: '收集需求与分析',
-    allowedActions: ['next', 'handoff', 'approve', 'reject', 'other'],
-    gateRequired: true,
-  },
-  PLAN: {
-    name: STAGES.PLAN,
-    description: '制定实现计划',
-    allowedActions: ['next', 'handoff', 'approve', 'reject', 'other'],
-    gateRequired: true,
+  IDLE: {
+    allowedActions: ['next'],
+    description: '初始状态',
+    gateRequired: false,
+    name: STAGES.IDLE,
   },
   IMPLEMENT: {
-    name: STAGES.IMPLEMENT,
+    allowedActions: ['next', 'handoff'],
     description: '执行开发任务',
-    allowedActions: ['next', 'handoff'],
     gateRequired: false,
+    name: STAGES.IMPLEMENT,
   },
-  REVIEW: {
-    name: STAGES.REVIEW,
-    description: '进行代码审查',
+  PLAN: {
     allowedActions: ['next', 'handoff', 'approve', 'reject', 'other'],
+    description: '制定实现计划',
     gateRequired: true,
-  },
-  EXECUTE: {
-    name: STAGES.EXECUTE,
-    description: '执行完成',
-    allowedActions: ['next', 'handoff'],
-    gateRequired: false,
+    name: STAGES.PLAN,
   },
   RECOVER: {
-    name: STAGES.RECOVER,
-    description: '从中断恢复',
     allowedActions: ['next', 'handoff'],
+    description: '从中断恢复',
     gateRequired: false,
+    name: STAGES.RECOVER,
+  },
+  RESEARCH: {
+    allowedActions: ['next', 'handoff', 'approve', 'reject', 'other'],
+    description: '收集需求与分析',
+    gateRequired: true,
+    name: STAGES.RESEARCH,
+  },
+  REVIEW: {
+    allowedActions: ['next', 'handoff', 'approve', 'reject', 'other'],
+    description: '进行代码审查',
+    gateRequired: true,
+    name: STAGES.REVIEW,
   },
 }
 
@@ -90,7 +87,7 @@ export function isLegalTransition(from: Stage, to: Stage): boolean {
 }
 
 /** 获取下一阶段建议 */
-export function getNextStage(current: Stage): Stage | null {
+export function getNextStage(current: Stage): null | Stage {
   const nextStages = LEGAL_TRANSITIONS[current]
   return nextStages?.[0] ?? null
 }
@@ -98,24 +95,24 @@ export function getNextStage(current: Stage): Stage | null {
 /** 获取阶段元数据 */
 export function getStageMetadata(stage: Stage): StageMetadata {
   return STAGE_METADATA[stage] || {
-    name: stage,
-    description: '未知阶段',
     allowedActions: [],
+    description: '未知阶段',
     gateRequired: false,
+    name: stage,
   }
 }
 
 /** 状态快照 */
 export interface StateSnapshot {
+  createdAt: string
+  lastTransition: null | {
+    from: Stage
+    reason: string
+    timestamp: string
+    to: Stage
+  }
   sessionId: string
   stage: Stage
-  lastTransition: {
-    from: Stage
-    to: Stage
-    timestamp: string
-    reason: string
-  } | null
-  createdAt: string
   updatedAt: string
 }
 
@@ -123,10 +120,10 @@ export interface StateSnapshot {
 export function createInitialState(sessionId: string): StateSnapshot {
   const now = new Date().toISOString()
   return {
+    createdAt: now,
+    lastTransition: null,
     sessionId,
     stage: STAGES.IDLE,
-    lastTransition: null,
-    createdAt: now,
     updatedAt: now,
   }
 }
@@ -145,13 +142,13 @@ export function transition(
 
   return {
     ...state,
-    stage: to,
     lastTransition: {
       from,
-      to,
-      timestamp: new Date().toISOString(),
       reason: reason || `从 ${from} 迁移到 ${to}`,
+      timestamp: new Date().toISOString(),
+      to,
     },
+    stage: to,
     updatedAt: new Date().toISOString(),
   }
 }

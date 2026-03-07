@@ -1,6 +1,6 @@
 # Story 1.3: View and Update Project Orchestration Config
 
-Status: in-progress
+Status: done
 
 ## Story
 
@@ -49,6 +49,12 @@ so that 我可以在不破坏默认可用性的前提下调整路由与治理策
 
 - 需要 Node.js 24 LTS 环境验证
 - 配置优先级（ENV > CLI flags > config.yaml）尚未完全实现
+
+## Tasks / Subtasks
+
+### Review Follow-ups (AI)
+
+- [x] [AI-Review][HIGH] 落实配置解析优先级 `CLI flags > ENV vars > .ai-dev/config.yaml`，并在输出中标注真实来源[`src/commands/config/show.ts:1`] — 已实现 `config:show` 优先级解析与来源追踪
 
 ## Dev Notes
 

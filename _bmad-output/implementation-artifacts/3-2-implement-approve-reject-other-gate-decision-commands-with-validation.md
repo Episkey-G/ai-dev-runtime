@@ -29,3 +29,9 @@ so that 我可以控制工作流走向。
 - `ai-dev approve` 命令：批准 Gate 决策并推进阶段
 - `ai-dev reject` 命令：占位实现
 - `ai-dev other` 命令：占位实现
+
+## Tasks / Subtasks
+
+### Review Follow-ups (AI)
+
+- [x] [AI-Review][CRITICAL] 完整实现 `reject/other` Gate 决策（含理由/替代方向、状态迁移与持久化），移除占位返回[`src/commands/reject.ts:1`]

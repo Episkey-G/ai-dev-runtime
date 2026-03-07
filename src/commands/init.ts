@@ -1,23 +1,22 @@
 import {Command, Flags} from '@oclif/core'
-import * as path from 'node:path'
+import path from 'node:path'
 
 import {failure, success} from '../cli/envelope.js'
-import {outputResult} from '../cli/output.js'
 import {ErrorCodes, RecoveryActions} from '../cli/error-codes.js'
+import {outputResult} from '../cli/output.js'
 import {initializeWorkspace, isValidPath} from '../lib/workspace.js'
 
 export default class Init extends Command {
   static override description = '初始化工作区，生成零配置默认设置'
-
-  static override flags = {
-    json: Flags.boolean({description: '以 JSON envelope 格式输出'}),
+static override flags = {
     force: Flags.boolean({
-      description: '强制重新初始化（覆盖已有配置）',
       default: false,
+      description: '强制重新初始化（覆盖已有配置）',
     }),
+    json: Flags.boolean({description: '以 JSON envelope 格式输出'}),
     'workspace-path': Flags.string({
-      description: '指定工作区路径（默认当前目录）',
       default: '.',
+      description: '指定工作区路径（默认当前目录）',
     }),
   }
 
@@ -42,7 +41,7 @@ export default class Init extends Command {
 
       // 60s 超时检查（NFR3）
       const duration = Date.now() - startTime
-      if (duration > 60000) {
+      if (duration > 60_000) {
         const error = {
           code: ErrorCodes.CFG_VALIDATION_FAILED,
           message: `初始化超时（${duration}ms），超过 60s 限制`,
@@ -57,10 +56,10 @@ export default class Init extends Command {
         outputResult(
           this,
           success({
-            message: '工作区已存在',
-            workspacePath: result.workspacePath,
             idempotent: true,
+            message: '工作区已存在',
             nextStep: '执行 ai-dev next 启动首个编排',
+            workspacePath: result.workspacePath,
           }),
           flags,
         )
@@ -71,18 +70,18 @@ export default class Init extends Command {
       outputResult(
         this,
         success({
-          message: '工作区初始化成功',
-          workspacePath: result.workspacePath,
           created: result.created,
-          idempotent: false,
-          nextStep: '执行 ai-dev next 启动首个编排',
           duration: `${duration}ms`,
+          idempotent: false,
+          message: '工作区初始化成功',
+          nextStep: '执行 ai-dev next 启动首个编排',
+          workspacePath: result.workspacePath,
         }),
         flags,
       )
-    } catch (err) {
-      const errnoCode = (err as NodeJS.ErrnoException).code
-      const rawMessage = (err as Error).message
+    } catch (error_) {
+      const errnoCode = (error_ as NodeJS.ErrnoException).code
+      const rawMessage = (error_ as Error).message
       const errorCode =
         errnoCode === 'EACCES' || errnoCode === 'EPERM' || rawMessage === ErrorCodes.CFG_WORKSPACE_PERMISSION
           ? ErrorCodes.CFG_WORKSPACE_PERMISSION
@@ -93,7 +92,7 @@ export default class Init extends Command {
         message:
           errorCode === ErrorCodes.CFG_WORKSPACE_PERMISSION
             ? '初始化失败: 工作区目录无写权限'
-            : `初始化失败: ${(err as Error).message}`,
+            : `初始化失败: ${(error_ as Error).message}`,
         recovery:
           RecoveryActions[errorCode as keyof typeof RecoveryActions] ||
           '请检查错误信息并重试',

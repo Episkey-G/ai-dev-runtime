@@ -1,10 +1,10 @@
 import {Command, Flags} from '@oclif/core'
-import * as path from 'node:path'
-import * as fs from 'node:fs'
+import fs from 'node:fs'
+import path from 'node:path'
 
-import {success, failure} from '../../cli/envelope.js'
-import {outputResult} from '../../cli/output.js'
+import {failure, success} from '../../cli/envelope.js'
 import {ErrorCodes, RecoveryActions} from '../../cli/error-codes.js'
+import {outputResult} from '../../cli/output.js'
 
 /** 配置文件路径 */
 function getConfigPath(workspacePath: string): string {
@@ -17,11 +17,12 @@ function loadConfig(workspacePath: string): Record<string, unknown> {
   if (!fs.existsSync(configPath)) {
     throw new Error('CFG_FILE_NOT_FOUND')
   }
-  return JSON.parse(fs.readFileSync(configPath, 'utf-8'))
+
+  return JSON.parse(fs.readFileSync(configPath, 'utf8'))
 }
 
 /** 校验配置 */
-function validateConfig(config: Record<string, unknown>): {valid: boolean; errors: string[]} {
+function validateConfig(config: Record<string, unknown>): {errors: string[]; valid: boolean;} {
   const errors: string[] = []
 
   // 必需字段检查
@@ -29,16 +30,17 @@ function validateConfig(config: Record<string, unknown>): {valid: boolean; error
     errors.push('缺少必填字段: version')
   }
 
-  if (!config.defaults) {
-    errors.push('缺少必填字段: defaults')
-  } else {
+  if (config.defaults) {
     const defaults = config.defaults as Record<string, unknown>
     if (!defaults.executor) {
       errors.push('defaults.executor 为必填项')
     }
+
     if (!defaults.deepAnalyzer) {
       errors.push('defaults.deepAnalyzer 为必填项')
     }
+  } else {
+    errors.push('缺少必填字段: defaults')
   }
 
   // 值校验
@@ -52,18 +54,17 @@ function validateConfig(config: Record<string, unknown>): {valid: boolean; error
   }
 
   return {
-    valid: errors.length === 0,
     errors,
+    valid: errors.length === 0,
   }
 }
 
 /** Validate 命令：校验配置 */
 export default class ConfigValidate extends Command {
   static override description = '校验工作区配置'
-
-  static override flags = {
+static override flags = {
     json: Flags.boolean({description: '以 JSON envelope 格式输出'}),
-    'workspace-path': Flags.string({description: '指定工作区路径', default: '.'}),
+    'workspace-path': Flags.string({default: '.', description: '指定工作区路径'}),
   }
 
   async run(): Promise<void> {
@@ -89,25 +90,25 @@ export default class ConfigValidate extends Command {
         outputResult(
           this,
           success({
-            valid: true,
-            message: '配置校验通过',
             config,
+            message: '配置校验通过',
+            valid: true,
           }),
           flags,
         )
       } else {
         const error = {
           code: ErrorCodes.CFG_VALIDATION_FAILED,
-          message: `配置校验失败: ${result.errors.join('; ')}`,
           details: {errors: result.errors},
+          message: `配置校验失败: ${result.errors.join('; ')}`,
           recovery: RecoveryActions.CFG_VALIDATION_FAILED,
         }
         outputResult(this, failure(error), flags)
       }
-    } catch (err) {
+    } catch (error_) {
       const error = {
         code: ErrorCodes.CFG_VALIDATION_FAILED,
-        message: `校验失败: ${(err as Error).message}`,
+        message: `校验失败: ${(error_ as Error).message}`,
         recovery: RecoveryActions.CFG_VALIDATION_FAILED,
       }
       outputResult(this, failure(error), flags)

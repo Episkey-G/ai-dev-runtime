@@ -1,138 +1,146 @@
 import {Command, Flags} from '@oclif/core'
-import * as path from 'node:path'
-import * as fs from 'node:fs'
+import path from 'node:path'
 
-import {success, failure} from '../cli/envelope.js'
-import {outputResult} from '../cli/output.js'
+import {failure, success} from '../cli/envelope.js'
 import {ErrorCodes, RecoveryActions} from '../cli/error-codes.js'
-
-/** 状态文件路径 */
-function getStatePath(workspacePath: string): string {
-  return path.join(workspacePath, '.ai-dev', 'snapshots', 'state.json')
-}
-
-/** 加载状态 */
-function loadState(workspacePath: string): Record<string, unknown> {
-  const statePath = getStatePath(workspacePath)
-  if (!fs.existsSync(statePath)) {
-    // 初始化状态
-    return {
-      sessionId: null,
-      stage: 'IDLE',
-      lastTransition: null,
-      createdAt: new Date().toISOString(),
-    }
-  }
-  return JSON.parse(fs.readFileSync(statePath, 'utf-8'))
-}
-
-/** 保存状态 */
-function saveState(workspacePath: string, state: Record<string, unknown>): void {
-  const statePath = getStatePath(workspacePath)
-  fs.writeFileSync(statePath, JSON.stringify(state, null, 2))
-}
-
-/** 阶段定义 */
-const STAGES = ['IDLE', 'RESEARCH', 'PLAN', 'IMPLEMENT', 'REVIEW', 'EXECUTE', 'RECOVER'] as const
-
-/** 合法迁移 */
-const LEGAL_TRANSITIONS: Record<string, string[]> = {
-  IDLE: ['RESEARCH'],
-  RESEARCH: ['PLAN'],
-  PLAN: ['IMPLEMENT'],
-  IMPLEMENT: ['REVIEW'],
-  REVIEW: ['EXECUTE', 'IMPLEMENT'],
-  EXECUTE: ['IDLE', 'RECOVER'],
-  RECOVER: ['IMPLEMENT', 'REVIEW', 'IDLE'],
-}
-
-/** 验证状态迁移是否合法 */
-function validateTransition(from: string, to: string): void {
-  const allowedTargets = LEGAL_TRANSITIONS[from] ?? []
-  if (!allowedTargets.includes(to)) {
-    throw new Error(`非法状态迁移: ${from} -> ${to}`)
-  }
-}
+import {outputResult} from '../cli/output.js'
+import {appendAuditEvent} from '../core/event-log.js'
+import {acquireWorkspaceLock} from '../core/workspace-lock.js'
+import {
+  createInitialRuntimeState,
+  isWorkspaceInitialized,
+  loadRuntimeState,
+  resolveWorkspacePaths,
+  saveRuntimeState,
+} from '../core/workspace-store.js'
 
 /** Next 命令：根据当前阶段生成下一步建议 */
 export default class Next extends Command {
   static override description = '基于当前阶段生成下一步建议并推进工作流'
-
   static override flags = {
     json: Flags.boolean({description: '以 JSON envelope 格式输出'}),
-    'workspace-path': Flags.string({description: '指定工作区路径', default: '.'}),
+    'workspace-path': Flags.string({default: '.', description: '指定工作区路径'}),
   }
 
   async run(): Promise<void> {
     const {flags} = await this.parse(Next)
     const workspacePath = path.resolve(flags['workspace-path'])
 
-    // 检查工作区是否已初始化
-    const aiDevPath = path.join(workspacePath, '.ai-dev')
-    if (!fs.existsSync(aiDevPath)) {
-      const error = {
-        code: ErrorCodes.CFG_FILE_NOT_FOUND,
-        message: '工作区未初始化，请先运行 ai-dev init',
-        recovery: '请先运行 ai-dev init 初始化工作区',
-      }
-      outputResult(this, failure(error), flags)
+    if (!isWorkspaceInitialized(workspacePath)) {
+      outputResult(
+        this,
+        failure({
+          code: ErrorCodes.CFG_FILE_NOT_FOUND,
+          message: '工作区未初始化，请先运行 ai-dev init',
+          recovery: '请先运行 ai-dev init 初始化工作区',
+        }),
+        flags,
+      )
       return
     }
 
-    try {
-      // 加载当前状态
-      const state = loadState(workspacePath) as {
-        stage: string
-        sessionId: string | null
-        lastTransition: Record<string, unknown> | null
-      }
+    let releaseLock: (() => void) | null = null
 
-      // 如果是首次运行，写入初始事件
+    try {
+      const lock = acquireWorkspaceLock(workspacePath)
+      releaseLock = lock.release
+
+      const state = loadRuntimeState(workspacePath) ?? createInitialRuntimeState()
+      const paths = resolveWorkspacePaths(workspacePath)
+
       if (!state.sessionId) {
-        validateTransition(state.stage, 'RESEARCH')
-        state.sessionId = generateSessionId()
-        state.stage = 'RESEARCH' // 首次推进到 RESEARCH
+        const timestamp = new Date().toISOString()
+        const sessionId = generateSessionId()
+
+        state.sessionId = sessionId
+        state.stage = 'RESEARCH'
         state.lastTransition = {
           from: 'IDLE',
-          to: 'RESEARCH',
-          timestamp: new Date().toISOString(),
           reason: '初始化工作流',
+          timestamp,
+          to: 'RESEARCH',
         }
-        saveState(workspacePath, state)
+        state.updatedAt = timestamp
+
+        appendAuditEvent(paths.eventsPath, {
+          actor: 'system',
+          contextRef: null,
+          event: 'workspace_initialized',
+          metadata: {
+            'workspace_path': workspacePath,
+          },
+          reason: '首次运行 next 初始化工作流',
+          sessionId,
+          stage: 'IDLE',
+          ts: timestamp,
+        })
+
+        const transitionEvent = appendAuditEvent(paths.eventsPath, {
+          actor: 'system',
+          contextRef: null,
+          event: 'stage_transition',
+          metadata: {
+            'from_stage': 'IDLE',
+            'to_stage': 'RESEARCH',
+          },
+          reason: '初始化工作流',
+          sessionId,
+          stage: 'RESEARCH',
+          ts: timestamp,
+        })
+
+        state.lastEventId = transitionEvent.event_id
+        state.lastEventChecksum = transitionEvent.checksum
+        saveRuntimeState(workspacePath, state)
       }
 
-      // 获取当前阶段的允许动作（必须在状态更新后）
       const finalStage = state.stage
-      const allowedActions = getAllowedActions(finalStage)
-      const recommendedAction = getRecommendedAction(finalStage)
-      const gateRequired = isGateRequired(finalStage)
-
-      // 生成建议
       const suggestion = {
+        allowedActions: getAllowedActions(finalStage),
         currentStage: finalStage,
-        allowedActions,
-        recommendedAction,
-        gateRequired,
+        gateRequired: isGateRequired(finalStage),
         reason: getTransitionReason(finalStage),
+        recommendedAction: getRecommendedAction(finalStage),
       }
 
       outputResult(
         this,
         success({
+          currentStage: finalStage,
           message: '已生成下一步建议',
-          currentStage: state.stage,
+          nextStep: '执行 ai-dev handoff 切换 Agent 或 ai-dev approve/reject/other 处理 Gate',
+          sessionId: state.sessionId,
           suggestion,
-          nextStep: '执行 ai-dev handoff 切换 Agent 或 ai-dev approve 进入下一阶段',
         }),
         flags,
       )
-    } catch (err) {
-      const error = {
-        code: ErrorCodes.CFG_VALIDATION_FAILED,
-        message: `执行失败: ${(err as Error).message}`,
-        recovery: RecoveryActions.CFG_VALIDATION_FAILED,
+    } catch (error_) {
+      const lockError = toLockError(error_)
+      if (lockError) {
+        outputResult(
+          this,
+          failure({
+            code: lockError.code,
+            details: lockError.details,
+            message: lockError.message,
+            recovery: lockError.recovery,
+          }),
+          flags,
+        )
+        return
       }
-      outputResult(this, failure(error), flags)
+
+      outputResult(
+        this,
+        failure({
+          code: ErrorCodes.CFG_VALIDATION_FAILED,
+          message: `执行失败: ${(error_ as Error).message}`,
+          recovery: RecoveryActions.CFG_VALIDATION_FAILED,
+        }),
+        flags,
+      )
+    } finally {
+      releaseLock?.()
     }
   }
 }
@@ -155,13 +163,13 @@ function getAllowedActions(stage: string): string[] {
 /** 获取推荐动作 */
 function getRecommendedAction(stage: string): string {
   const recommendations: Record<string, string> = {
-    IDLE: 'next',
-    RESEARCH: 'handoff',
-    PLAN: 'next',
-    IMPLEMENT: 'next',
-    REVIEW: 'approve',
     EXECUTE: 'next',
+    IDLE: 'next',
+    IMPLEMENT: 'next',
+    PLAN: 'next',
     RECOVER: 'next',
+    RESEARCH: 'handoff',
+    REVIEW: 'approve',
   }
   return recommendations[stage] || 'next'
 }
@@ -175,18 +183,45 @@ function isGateRequired(stage: string): boolean {
 /** 获取迁移原因 */
 function getTransitionReason(stage: string): string {
   const reasons: Record<string, string> = {
-    IDLE: '初始状态',
-    RESEARCH: '收集需求与分析',
-    PLAN: '制定实现计划',
-    IMPLEMENT: '执行开发任务',
-    REVIEW: '进行代码审查',
     EXECUTE: '执行完成',
+    IDLE: '初始状态',
+    IMPLEMENT: '执行开发任务',
+    PLAN: '制定实现计划',
     RECOVER: '从中断恢复',
+    RESEARCH: '收集需求与分析',
+    REVIEW: '进行代码审查',
   }
   return reasons[stage] || '未知阶段'
 }
 
 /** 生成会话 ID */
 function generateSessionId(): string {
-  return `session_${Date.now()}_${Math.random().toString(36).substring(2, 11)}`
+  return `session_${Date.now()}_${Math.random().toString(36).slice(2, 11)}`
+}
+
+function toLockError(error_: unknown): null | {
+  code: (typeof ErrorCodes)[keyof typeof ErrorCodes]
+  details: Record<string, unknown>
+  message: string
+  recovery: string
+} {
+  const error = error_ as Error
+  if (error.name !== ErrorCodes.LOCK_CONFLICT && error.name !== ErrorCodes.LOCK_STALE_TAKEOVER_FAILED) {
+    return null
+  }
+
+  let details: Record<string, unknown> = {}
+  try {
+    details = JSON.parse(error.message) as Record<string, unknown>
+  } catch {
+    details = {raw: error.message}
+  }
+
+  const code = error.name as (typeof ErrorCodes)[keyof typeof ErrorCodes]
+  return {
+    code,
+    details,
+    message: code === ErrorCodes.LOCK_CONFLICT ? '工作区被锁定，无法并发执行' : 'stale lock 接管失败',
+    recovery: RecoveryActions[code],
+  }
 }
