@@ -4,6 +4,7 @@ import {Command, Flags} from '@oclif/core'
 import fs from 'node:fs'
 import path from 'node:path'
 
+import {AGENTS, type ContextPacket} from '../adapters/index.js'
 import {failure, success} from '../cli/envelope.js'
 import {ErrorCodes, RecoveryActions} from '../cli/error-codes.js'
 import {outputResult} from '../cli/output.js'
@@ -13,49 +14,8 @@ import {
   isWorkspaceInitialized,
   loadRuntimeState,
   resolveWorkspacePaths,
-  type RuntimeState,
   saveRuntimeState,
 } from '../core/workspace-store.js'
-
-/** Agent 定义 */
-export interface Agent {
-  capabilities: string[]
-  id: string
-  name: string
-  role: 'deepAnalyzer' | 'executor' | 'reviewer'
-}
-
-/** 可用 Agents */
-export const AGENTS: Record<string, Agent> = {
-  claude: {
-    capabilities: ['code-generation', 'refactoring', 'testing'],
-    id: 'claude',
-    name: 'Claude',
-    role: 'executor',
-  },
-  codex: {
-    capabilities: ['code-review', 'analysis', 'architecture'],
-    id: 'codex',
-    name: 'Codex',
-    role: 'deepAnalyzer',
-  },
-}
-
-/** 上下文数据包（对外字段统一 snake_case） */
-export interface ContextPacket {
-  context: {
-    pending_tasks: string[]
-    recent_events: string[]
-    state: RuntimeState
-  }
-  from_agent: string
-  intent_id: string
-  schema_version: string
-  session_id: string
-  stage: string
-  timestamp: string
-  to_agent: string
-}
 
 /** 执行跨 Agent 上下文交接 */
 export default class Handoff extends Command {

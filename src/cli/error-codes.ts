@@ -21,6 +21,14 @@ export const ErrorCodes = {
   CFG_WORKSPACE_PATH_INVALID: 'CFG_WORKSPACE_PATH_INVALID',
   /** 工作区目录无写权限 */
   CFG_WORKSPACE_PERMISSION: 'CFG_WORKSPACE_PERMISSION',
+  /** Connector 鉴权失败 */
+  CONNECTOR_AUTH_FAILED: 'CONNECTOR_AUTH_FAILED',
+  /** Connector CLI 不存在或不可执行 */
+  CONNECTOR_CLI_NOT_FOUND: 'CONNECTOR_CLI_NOT_FOUND',
+  /** Connector 进程调用失败 */
+  CONNECTOR_INVOCATION_FAILED: 'CONNECTOR_INVOCATION_FAILED',
+  /** Connector 调用超时 */
+  CONNECTOR_TIMEOUT: 'CONNECTOR_TIMEOUT',
   /** 事件 checksum 链校验失败 */
   EVT_EVENT_CHECKSUM_INVALID: 'EVT_EVENT_CHECKSUM_INVALID',
   /** 事件日志损坏或格式不合法 */
@@ -49,6 +57,10 @@ export const RecoveryActions: Record<ErrorCode, string> = {
   [ErrorCodes.CFG_WORKSPACE_EXISTS]: '工作区已存在，如需重新初始化请先删除 .ai-dev 目录或使用 --force 覆盖',
   [ErrorCodes.CFG_WORKSPACE_PATH_INVALID]: '请检查路径是否合法（不能包含特殊字符）',
   [ErrorCodes.CFG_WORKSPACE_PERMISSION]: '请检查目标目录权限或切换到有写权限的目录',
+  [ErrorCodes.CONNECTOR_AUTH_FAILED]: '请重新登录对应 CLI（例如 claude login 或 codex auth）后重试',
+  [ErrorCodes.CONNECTOR_CLI_NOT_FOUND]: '请确认 Claude/Codex CLI 已安装并在 PATH 中可访问',
+  [ErrorCodes.CONNECTOR_INVOCATION_FAILED]: '请检查 connector 命令参数、stderr 输出并重试',
+  [ErrorCodes.CONNECTOR_TIMEOUT]: '请缩小任务范围或增大超时阈值后重试',
   [ErrorCodes.EVT_EVENT_CHECKSUM_INVALID]: '请核对事件链完整性，必要时从最近健康快照恢复',
   [ErrorCodes.EVT_EVENT_CORRUPT]: '请修复或回滚损坏事件，再重试 replay/resume',
   [ErrorCodes.LOCK_CONFLICT]: '请等待占用进程结束，或在确认 stale 后重试以触发安全接管',
