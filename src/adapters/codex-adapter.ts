@@ -3,6 +3,12 @@ import {spawn} from 'node:child_process'
 import type {AgentAdapter, AgentIntent, AgentResult} from './types.js'
 
 import {ErrorCodes} from '../cli/error-codes.js'
+import {
+  findCachedAgentOutcome,
+  writeAgentCompensation,
+  writeAgentIntent,
+  writeAgentResult,
+} from './event-helpers.js'
 
 const DEFAULT_TIMEOUT_MS = 120_000
 
@@ -10,7 +16,28 @@ export class CodexAdapter implements AgentAdapter {
   readonly agentId = 'codex' as const
 
   async execute(intent: AgentIntent): Promise<AgentResult> {
-    return invokeConnector('codex', ['exec', intent.task], intent)
+    const cached = findCachedAgentOutcome(intent)
+    if (cached) {
+      return cached
+    }
+
+    const context = intent.eventsPath && intent.stage ? {eventsPath: intent.eventsPath, stage: intent.stage} : null
+    if (context) {
+      writeAgentIntent(intent, context)
+    }
+
+    const result = await invokeConnector('codex', ['exec', intent.task], intent)
+    if (!context) {
+      return result
+    }
+
+    if (result.success) {
+      writeAgentResult(intent, context, result)
+      return result
+    }
+
+    writeAgentCompensation(intent, context, result)
+    return result
   }
 }
 
