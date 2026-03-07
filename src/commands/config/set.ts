@@ -1,10 +1,10 @@
 import {Command, Flags} from '@oclif/core'
-import * as path from 'node:path'
-import * as fs from 'node:fs'
+import fs from 'node:fs'
+import path from 'node:path'
 
-import {success, failure} from '../../cli/envelope.js'
-import {outputResult} from '../../cli/output.js'
+import {failure, success} from '../../cli/envelope.js'
 import {ErrorCodes, RecoveryActions} from '../../cli/error-codes.js'
+import {outputResult} from '../../cli/output.js'
 
 /** 配置文件路径 */
 function getConfigPath(workspacePath: string): string {
@@ -17,16 +17,15 @@ function loadConfig(workspacePath: string): Record<string, unknown> {
   if (!fs.existsSync(configPath)) {
     throw new Error('CFG_FILE_NOT_FOUND')
   }
-  return JSON.parse(fs.readFileSync(configPath, 'utf-8'))
+
+  return JSON.parse(fs.readFileSync(configPath, 'utf8'))
 }
 
 /** Set 命令：更新配置 */
 export default class ConfigSet extends Command {
   static override description = '更新工作区配置'
-
   static override flags = {
     json: Flags.boolean({description: '以 JSON envelope 格式输出'}),
-    'workspace-path': Flags.string({description: '指定工作区路径', default: '.'}),
     key: Flags.string({
       description: '配置键（如 defaults.executor）',
       required: true,
@@ -35,6 +34,7 @@ export default class ConfigSet extends Command {
       description: '配置值',
       required: true,
     }),
+    'workspace-path': Flags.string({default: '.', description: '指定工作区路径'}),
   }
 
   async run(): Promise<void> {
@@ -64,11 +64,12 @@ export default class ConfigSet extends Command {
         if (!(key in current) || typeof current[key] !== 'object') {
           current[key] = {}
         }
+
         current = current[key] as Record<string, unknown>
       }
 
       // 设置值
-      const lastKey = keys[keys.length - 1]
+      const lastKey = keys.at(-1) ?? flags.key
       const oldValue = current[lastKey]
       current[lastKey] = flags.value
 
@@ -78,19 +79,19 @@ export default class ConfigSet extends Command {
       outputResult(
         this,
         success({
-          message: '配置更新成功',
           key: flags.key,
-          oldValue,
+          message: '配置更新成功',
           newValue: flags.value,
+          oldValue,
           source: 'config-file',
         }),
         flags,
       )
-    } catch (err) {
-      const errorCode = (err as Error).message || ErrorCodes.CFG_VALIDATION_FAILED
+    } catch (error_) {
+      const errorCode = (error_ as Error).message || ErrorCodes.CFG_VALIDATION_FAILED
       const error = {
         code: errorCode as (typeof ErrorCodes)[keyof typeof ErrorCodes],
-        message: `更新配置失败: ${(err as Error).message}`,
+        message: `更新配置失败: ${(error_ as Error).message}`,
         recovery:
           RecoveryActions[errorCode as keyof typeof RecoveryActions] ||
           RecoveryActions.CFG_VALIDATION_FAILED,

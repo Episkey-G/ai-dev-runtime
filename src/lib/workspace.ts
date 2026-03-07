@@ -3,52 +3,58 @@
  * 负责创建 .ai-dev/ 目录结构和默认配置
  */
 
+import fs from 'node:fs'
 import {createRequire} from 'node:module'
-import * as path from 'node:path'
-import * as fs from 'node:fs'
+import path from 'node:path'
 
 const require = createRequire(import.meta.url)
 const pkg = require('../../package.json') as {version: string}
 
 /** 默认工作区配置 */
 export interface WorkspaceConfig {
-  version: string
-  workspaceVersion: string
   defaults: {
-    executor: string
     deepAnalyzer: string
+    executor: string
     gatePolicy: string[]
   }
   paths: {
+    context: string
     events: string
     snapshots: string
-    context: string
   }
+  version: string
+  workspaceVersion: string
 }
 
 /** 初始化结果 */
 export interface InitResult {
-  initialized: boolean
-  workspacePath: string
   created: string[]
   idempotent: boolean
+  initialized: boolean
+  workspacePath: string
 }
 
 /** 默认工作区配置 */
-export function getDefaultConfig(workspacePath: string): WorkspaceConfig {
+export function getDefaultConfig(_workspacePath: string): WorkspaceConfig {
   return {
-    version: pkg.version,
-    workspaceVersion: '1.0.0',
     defaults: {
-      executor: 'claude',
       deepAnalyzer: 'codex',
-      gatePolicy: ['prd_freeze', 'architecture_freeze', 'high_complexity'],
+      executor: 'claude',
+      gatePolicy: [
+        'prd_freeze',
+        'architecture_freeze',
+        'high_complexity',
+        'release',
+        'fix_loop',
+      ],
     },
     paths: {
+      context: '.ai-dev/context',
       events: '.ai-dev/events',
       snapshots: '.ai-dev/snapshots',
-      context: '.ai-dev/context',
     },
+    version: pkg.version,
+    workspaceVersion: '1.0.0',
   }
 }
 
@@ -60,6 +66,7 @@ export function isValidPath(p: string): boolean {
     if (normalized.includes('..') || normalized.includes('~')) {
       return false
     }
+
     return true
   } catch {
     return false
@@ -83,10 +90,10 @@ export async function initializeWorkspace(
     const exists = fs.existsSync(workspacePath)
     if (exists && !force) {
       return {
-        initialized: false,
-        workspacePath,
         created: [],
         idempotent: true,
+        initialized: false,
+        workspacePath,
       }
     }
 
@@ -122,10 +129,12 @@ export async function initializeWorkspace(
     const statePath = path.join(workspacePath, 'snapshots', 'state.json')
     if (!fs.existsSync(statePath)) {
       const initialState = {
+        createdAt: new Date().toISOString(),
+        lastEventChecksum: null,
+        lastEventId: null,
+        lastTransition: null,
         sessionId: null,
         stage: 'IDLE',
-        lastTransition: null,
-        createdAt: new Date().toISOString(),
       }
       fs.writeFileSync(statePath, JSON.stringify(initialState, null, 2))
       created.push('state.json')
@@ -143,16 +152,17 @@ export async function initializeWorkspace(
     }
 
     return {
-      initialized: true,
-      workspacePath,
       created,
       idempotent: false,
+      initialized: true,
+      workspacePath,
     }
-  } catch (err) {
-    const code = (err as NodeJS.ErrnoException).code
+  } catch (error) {
+    const {code} = (error as NodeJS.ErrnoException)
     if (code === 'EACCES' || code === 'EPERM') {
       throw new Error('CFG_WORKSPACE_PERMISSION')
     }
-    throw err
+
+    throw error
   }
 }

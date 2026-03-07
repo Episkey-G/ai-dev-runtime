@@ -64,6 +64,8 @@ so that 我可以在本地开始受控编排而不是手工多 Agent 切换。
 - [x] [AI-Review][HIGH] 校正 Story 的 File List 与当前 git 状态一致，避免”story 记录 39 文件改动但 git 无变更”的审计不一致[`_bmad-output/implementation-artifacts/1-1-set-up-initial-project-from-oclif-starter-template-and-verify-cli-availability.md:186`] — 已基于 `git ls-files` 校正，移除不存在的 .cmd 文件
 - [x] [AI-Review][MEDIUM] 补齐 E2E 错误路径覆盖：增加 AC3 失败场景（如 `CFG_NPM_UNAVAILABLE`/`CFG_DEPENDENCY_MISSING`）的命令级断言[`tests/e2e/cli-smoke.test.ts:41`] — 新增 3 个 e2e 测试：preflight 机制验证、全命令 envelope 结构、版本一致性
 - [x] [AI-Review][LOW] 统一版本来源，消除 envelope `meta.version`（env/fallback）与 `version` 命令（package.json）潜在漂移[`src/cli/envelope.ts:45`] — envelope 的 getVersion() 改为从 package.json 读取，与 version 命令统一
+- [x] [AI-Review][MEDIUM] 强化命令测试语义断言，避免仅校验 “退出码 + envelope 形状” 导致假阳性[`tests/integration/commands.test.ts:1`] — 已改为语义化断言（事件写入、配置优先级、Gate 决策、resume/replay 失败路径）
+- [x] [AI-Review][MEDIUM] 修复 lint 基线并恢复文档一致性（当前 `npm run lint` 仍报 230 errors）[`src/commands/approve.ts:1`] — 已清零 lint，`npm run lint` 通过
 
 ## Dev Notes
 

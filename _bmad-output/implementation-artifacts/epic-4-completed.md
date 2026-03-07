@@ -15,3 +15,9 @@
 ### Story 4.4-4.7: Context Management
 - Context directory structure created
 - Context packets saved to `.ai-dev/context/`
+
+## Tasks / Subtasks
+
+### Review Follow-ups (AI)
+
+- [x] [AI-Review][HIGH] `handoff` 流程补齐 `agent_handoff` 审计事件与 `schema_version/intent_id` 字段契约，并统一对外 `snake_case`[`src/commands/handoff.ts:1`]

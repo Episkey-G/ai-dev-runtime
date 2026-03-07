@@ -1,6 +1,6 @@
 # Story 1.4: Start First Orchestration from Initialized Workspace
 
-Status: in-progress
+Status: done
 
 ## Story
 
@@ -64,3 +64,11 @@ so that 我可以从"准备环境"进入"实际推进任务"的受控循环。
 - 事件日志写入（append-only）
 - 工作区文件锁
 - 并发冲突处理
+
+## Tasks / Subtasks
+
+### Review Follow-ups (AI)
+
+- [x] [AI-Review][HIGH] 首次 `ai-dev next` 写入 `workspace_initialized` 与 `stage_transition` 事件，满足 append-only 可审计要求[`src/commands/next.ts:1`]
+- [x] [AI-Review][HIGH] 实现 `.ai-dev/.lock` + stale-lock 安全接管，遇并发冲突返回可恢复错误[`src/core/workspace-lock.ts:1`]
+- [x] [AI-Review][MEDIUM] 收敛命令层对 `.ai-dev/*` 的直接读写，改为通过 core service 访问[`src/core/workspace-store.ts:1`]

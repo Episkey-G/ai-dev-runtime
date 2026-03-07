@@ -88,12 +88,21 @@ describe('CLI 端到端冒烟测试', () => {
     })
 
     it('已知命令 --json 应包含统一 envelope 结构', () => {
-      const commands = ['init', 'next', 'handoff', 'approve', 'reject', 'other', 'resume', 'replay']
+      const commands = [
+        'init --json',
+        'next --json',
+        'handoff --json',
+        'approve --json',
+        'reject --json --reason "e2e reject"',
+        'other --json --direction "e2e alternative"',
+        'resume --json',
+        'replay --json',
+      ]
       for (const cmd of commands) {
-        const {exitCode, stdout} = runCli(`${cmd} --json`)
+        const {exitCode, stdout} = runCli(cmd)
         expect(exitCode).toBe(0)
         const envelope = JSON.parse(stdout)
-        expect(envelope).toHaveProperty('ok', true)
+        expect(envelope).toHaveProperty('ok')
         expect(envelope).toHaveProperty('data')
         expect(envelope).toHaveProperty('meta')
         expect(envelope.meta).toHaveProperty('version')

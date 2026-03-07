@@ -1,6 +1,6 @@
 # Story 1.2: Initialize Workspace with Zero-Config Defaults
 
-Status: in-progress
+Status: done
 
 ## Story
 
@@ -69,6 +69,13 @@ so that 我可以不做复杂配置就进入首个编排流程。
 ├── context/         # 上下文存储
 └── locks/           # 文件锁
 ```
+
+## Tasks / Subtasks
+
+### Review Follow-ups (AI)
+
+- [x] [AI-Review][HIGH] 默认 gate 策略补齐到 5 项（`prd_freeze`、`architecture_freeze`、`high_complexity`、`release`、`fix_loop`）[`src/lib/workspace.ts:40`]
+- [x] [AI-Review][MEDIUM] 对齐 story 状态与 sprint-status：`1-2/1-3/1-4/3-2` 当前文件状态与追踪文件不一致[`_bmad-output/implementation-artifacts/sprint-status.yaml:44`] — 已同步为 `done`
 
 ## Dev Notes
 
