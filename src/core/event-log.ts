@@ -4,6 +4,17 @@ import {createHash} from 'node:crypto'
 import fs from 'node:fs'
 
 export const CURRENT_SCHEMA_VERSION = '1.0.0'
+export const AUDIT_EVENT_TYPES = [
+  'agent_compensation',
+  'agent_handoff',
+  'agent_intent',
+  'agent_result',
+  'gate_decision',
+  'stage_transition',
+  'workspace_initialized',
+] as const
+
+export type AuditEventType = (typeof AUDIT_EVENT_TYPES)[number]
 
 type JsonValue =
   | boolean
@@ -18,7 +29,7 @@ export interface AuditEvent {
   checksum: string
   context_ref: null | string
   decision: null | string
-  event: string
+  event: AuditEventType
   event_id: number
   intent_id: null | string
   metadata: Record<string, JsonValue>
@@ -34,7 +45,7 @@ export interface AppendEventInput {
   actor: string
   contextRef?: null | string
   decision?: null | string
-  event: string
+  event: AuditEventType
   intentId?: null | string
   metadata?: Record<string, JsonValue>
   reason?: null | string
@@ -318,7 +329,7 @@ function parseEventLine(line: string, lineNo: number): AuditEvent {
     checksum: toStringField(record.checksum, lineNo, 'checksum'),
     context_ref: toNullableStringField(record.context_ref, lineNo, 'context_ref'),
     decision: toNullableStringField(record.decision, lineNo, 'decision'),
-    event: toStringField(record.event, lineNo, 'event'),
+    event: toAuditEventTypeField(record.event, lineNo),
     event_id: toNumberField(record.event_id, lineNo, 'event_id'),
     intent_id: toNullableStringField(record.intent_id, lineNo, 'intent_id'),
     metadata: toMetadataField(record.metadata, lineNo),
@@ -396,4 +407,15 @@ function toStringField(value: string | undefined, lineNo: number, fieldName: str
   }
 
   return value
+}
+
+function toAuditEventTypeField(value: string | undefined, lineNo: number): AuditEventType {
+  const event = toStringField(value, lineNo, 'event')
+  if (!AUDIT_EVENT_TYPES.includes(event as AuditEventType)) {
+    throw new Error(
+      `events.jsonl 第 ${lineNo} 行字段 event 不合法: ${event}，可用值: ${AUDIT_EVENT_TYPES.join(', ')}`,
+    )
+  }
+
+  return event as AuditEventType
 }

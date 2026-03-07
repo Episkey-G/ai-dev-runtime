@@ -27,8 +27,10 @@ export type AgentId = keyof typeof AGENTS
 
 export interface AgentIntent {
   agentId: AgentId
+  eventsPath?: string
   intentId: string
   sessionId: string
+  stage?: string
   task: string
   timeoutMs?: number
 }
