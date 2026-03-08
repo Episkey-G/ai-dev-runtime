@@ -5,6 +5,7 @@ import type {AgentIntent, AgentResult} from './types.js'
 import {
   appendAuditEvent,
   type AppendEventInput,
+  type AuditEvent,
   CURRENT_SCHEMA_VERSION,
   readEventsStrict,
 } from '../core/event-log.js'
@@ -108,6 +109,15 @@ export function writeAgentIntent(intent: AgentIntent, context: AgentEventContext
   })
 }
 
+export function hasIntentCheckpoint(intent: AgentIntent): boolean {
+  if (!intent.eventsPath) {
+    return false
+  }
+
+  const events = readEventsStrict(intent.eventsPath)
+  return events.some((event) => event.event === 'agent_intent' && event.intent_id === intent.intentId)
+}
+
 export function writeAgentResult(
   intent: AgentIntent,
   context: AgentEventContext,
@@ -145,4 +155,46 @@ export function writeAgentCompensation(
       success: false,
     },
   })
+}
+
+export interface PendingAgentRecoveryState {
+  agentId: string
+  intentId: string
+  stage: string
+  timestamp: string
+}
+
+export function findPendingAgentRecoveryState(
+  events: AuditEvent[],
+  sessionId?: string,
+): null | PendingAgentRecoveryState {
+  const pending = new Map<string, PendingAgentRecoveryState>()
+
+  for (const event of events) {
+    if (sessionId && event.session_id !== sessionId) {
+      continue
+    }
+
+    if (event.event === 'agent_intent' && event.intent_id) {
+      pending.set(event.intent_id, {
+        agentId: typeof event.metadata.agent_id === 'string' ? event.metadata.agent_id : 'unknown',
+        intentId: event.intent_id,
+        stage: event.stage,
+        timestamp: event.ts,
+      })
+      continue
+    }
+
+    if ((event.event === 'agent_result' || event.event === 'agent_compensation') && event.intent_id) {
+      pending.delete(event.intent_id)
+    }
+  }
+
+  const unresolved = [...pending.values()]
+  if (unresolved.length === 0) {
+    return null
+  }
+
+  unresolved.sort((left, right) => left.timestamp.localeCompare(right.timestamp))
+  return unresolved.at(-1) ?? null
 }
