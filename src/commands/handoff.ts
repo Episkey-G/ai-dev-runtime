@@ -16,6 +16,7 @@ import {
   resolveWorkspacePaths,
   saveRuntimeState,
 } from '../core/workspace-store.js'
+import {validateContextPacket} from '../lib/schemas.js'
 
 /** 执行跨 Agent 上下文交接 */
 export default class Handoff extends Command {
@@ -156,6 +157,7 @@ function saveContextPacket(contextPath: string, packet: ContextPacket): void {
     fs.mkdirSync(contextPath, {recursive: true})
   }
 
-  const file = `handoff-${safeFilenameTimestamp(packet.timestamp)}.json`
-  fs.writeFileSync(path.join(contextPath, file), JSON.stringify(packet, null, 2))
+  const validatedPacket = validateContextPacket(packet)
+  const file = `handoff-${safeFilenameTimestamp(validatedPacket.timestamp)}.json`
+  fs.writeFileSync(path.join(contextPath, file), JSON.stringify(validatedPacket, null, 2))
 }
