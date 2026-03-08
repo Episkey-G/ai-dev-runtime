@@ -5,7 +5,7 @@ import {failure, success} from '../cli/envelope.js'
 import {ErrorCodes, RecoveryActions} from '../cli/error-codes.js'
 import {outputResult} from '../cli/output.js'
 import {appendAuditEvent} from '../core/event-log.js'
-import {applyGateDecision, GATE_STAGES} from '../core/gate-decision.js'
+import {applyGateDecision, DEFAULT_GATE_POLICY_NAME, GATE_POLICY_NAMES, GATE_STAGES} from '../core/gate-decision.js'
 import {acquireWorkspaceLock} from '../core/workspace-lock.js'
 import {
   isWorkspaceInitialized,
@@ -20,6 +20,11 @@ export default class Other extends Command {
   static override flags = {
     direction: Flags.string({description: '替代方向', required: true}),
     json: Flags.boolean({description: '以 JSON envelope 格式输出'}),
+    policy: Flags.string({
+      default: DEFAULT_GATE_POLICY_NAME,
+      description: 'Gate 策略名称',
+      options: GATE_POLICY_NAMES,
+    }),
     reason: Flags.string({description: '决策备注（可选）'}),
     'workspace-path': Flags.string({default: '.', description: '指定工作区路径'}),
   }
@@ -75,9 +80,10 @@ export default class Other extends Command {
       }
 
       const paths = resolveWorkspacePaths(workspacePath)
-      const {nextStage, state: newState} = applyGateDecision({
+      const {nextStage, policyName, state: newState} = applyGateDecision({
         decision: 'other',
         direction: flags.direction,
+        policyName: flags.policy,
         reason: flags.reason,
         state,
       })
@@ -89,6 +95,7 @@ export default class Other extends Command {
         metadata: {
           direction: flags.direction,
           'next_stage': nextStage,
+          'policy_name': policyName,
         },
         reason: flags.reason ?? flags.direction,
         sessionId: state.sessionId,
@@ -107,6 +114,7 @@ export default class Other extends Command {
           gateDecisions: newState.gateDecisions ?? [],
           message: 'Gate 自定义决策已记录',
           nextStage,
+          policyName,
           reason: flags.reason ?? null,
           stage: state.stage,
         }),

@@ -7,6 +7,7 @@ export interface RuntimeState {
   gateDecisions?: Array<{
     decision: 'approve' | 'other' | 'reject'
     direction?: string
+    policyName?: string
     reason?: string
     stage: string
     timestamp: string

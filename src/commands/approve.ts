@@ -5,7 +5,7 @@ import {failure, success} from '../cli/envelope.js'
 import {ErrorCodes, RecoveryActions} from '../cli/error-codes.js'
 import {outputResult} from '../cli/output.js'
 import {appendAuditEvent} from '../core/event-log.js'
-import {applyGateDecision, GATE_STAGES} from '../core/gate-decision.js'
+import {applyGateDecision, DEFAULT_GATE_POLICY_NAME, GATE_POLICY_NAMES, GATE_STAGES} from '../core/gate-decision.js'
 import {acquireWorkspaceLock} from '../core/workspace-lock.js'
 import {
   isWorkspaceInitialized,
@@ -19,6 +19,11 @@ export default class Approve extends Command {
   static override description = '批准当前 Gate 决策'
   static override flags = {
     json: Flags.boolean({description: '以 JSON envelope 格式输出'}),
+    policy: Flags.string({
+      default: DEFAULT_GATE_POLICY_NAME,
+      description: 'Gate 策略名称',
+      options: GATE_POLICY_NAMES,
+    }),
     reason: Flags.string({description: '审批理由（可选）'}),
     'workspace-path': Flags.string({default: '.', description: '指定工作区路径'}),
   }
@@ -87,8 +92,9 @@ export default class Approve extends Command {
       }
 
       const paths = resolveWorkspacePaths(workspacePath)
-      const {nextStage, state: newState} = applyGateDecision({
+      const {nextStage, policyName, state: newState} = applyGateDecision({
         decision: 'approve',
+        policyName: flags.policy,
         reason: flags.reason,
         state,
       })
@@ -99,6 +105,7 @@ export default class Approve extends Command {
         event: 'gate_decision',
         metadata: {
           'next_stage': nextStage,
+          'policy_name': policyName,
         },
         reason: flags.reason ?? 'Gate approved',
         sessionId: state.sessionId,
@@ -132,6 +139,7 @@ export default class Approve extends Command {
           gateDecisions: newState.gateDecisions ?? [],
           message: 'Gate 决策已批准',
           nextStage,
+          policyName,
           stage: state.stage,
         }),
         flags,
