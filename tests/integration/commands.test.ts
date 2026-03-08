@@ -1,9 +1,13 @@
+/* eslint-disable camelcase */
+
 import {execSync} from 'node:child_process'
 import fs from 'node:fs'
 import os from 'node:os'
 import path, {dirname, resolve} from 'node:path'
 import {fileURLToPath} from 'node:url'
 import {afterEach, describe, expect, it} from 'vitest'
+
+import {appendAuditEvent} from '../../src/core/event-log.js'
 
 const PROJECT_ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '../..')
 const CLI = resolve(PROJECT_ROOT, 'bin/dev.js')
@@ -180,6 +184,50 @@ describe('CLI 命令面集成测试', () => {
     expect(envelope.data.preflight.checksum_chain).toBe('passed')
     expect(envelope.data.preflight.snapshot_anchor).toBe('passed')
     expect(envelope.data.preflight.schema_compatibility).toBe('passed')
+  })
+
+  it('resume 应检测未完成的 agent_intent 并切换到 RECOVER', () => {
+    const workspace = createWorkspaceDir()
+    workspaces.push(workspace)
+
+    expect(runCli(`init --json --workspace-path ${workspace}`).exitCode).toBe(0)
+    expect(runCli(`next --json --workspace-path ${workspace}`).exitCode).toBe(0)
+
+    const statePath = path.join(workspace, '.ai-dev', 'snapshots', 'state.json')
+    const eventsPath = path.join(workspace, '.ai-dev', 'events', 'events.jsonl')
+    const state = JSON.parse(fs.readFileSync(statePath, 'utf8')) as {
+      lastEventChecksum: null | string
+      lastEventId: null | number
+      sessionId: string
+      stage: string
+    }
+
+    const pendingEvent = appendAuditEvent(eventsPath, {
+      actor: 'system',
+      event: 'agent_intent',
+      intentId: 'intent_crash_pending',
+      metadata: {
+        agent_id: 'claude',
+        schema_version: '1.0.0',
+        task: 'simulate crash',
+        timestamp: new Date().toISOString(),
+      },
+      reason: '模拟调用前 checkpoint',
+      sessionId: state.sessionId,
+      stage: state.stage,
+    })
+
+    state.lastEventId = pendingEvent.event_id
+    state.lastEventChecksum = pendingEvent.checksum
+    fs.writeFileSync(statePath, JSON.stringify(state, null, 2))
+
+    const resume = runCli(`resume --json --workspace-path ${workspace}`)
+    expect(resume.exitCode).toBe(0)
+    const envelope = JSON.parse(resume.stdout)
+    expect(envelope.ok).toBe(true)
+    expect(envelope.data.stage).toBe('RECOVER')
+    expect(envelope.data.recoveryState.detected).toBe(true)
+    expect(envelope.data.recoveryState.pendingIntent.intentId).toBe('intent_crash_pending')
   })
 
   it('replay 遇到损坏事件行应 hard-stop', () => {

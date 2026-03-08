@@ -1,16 +1,25 @@
+/* eslint-disable camelcase */
+
 import {Command, Flags} from '@oclif/core'
 import path from 'node:path'
 
+import {findPendingAgentRecoveryState} from '../adapters/event-helpers.js'
 import {failure, success} from '../cli/envelope.js'
 import {ErrorCodes, RecoveryActions} from '../cli/error-codes.js'
 import {outputResult} from '../cli/output.js'
 import {
+  appendAuditEvent,
   readEventsStrict,
   validateChecksumChain,
   validateSchemaCompatibility,
   verifySnapshotAnchor,
 } from '../core/event-log.js'
-import {isWorkspaceInitialized, loadRuntimeState, resolveWorkspacePaths} from '../core/workspace-store.js'
+import {
+  isWorkspaceInitialized,
+  loadRuntimeState,
+  resolveWorkspacePaths,
+  saveRuntimeState,
+} from '../core/workspace-store.js'
 
 /** 从中断点恢复编排 */
 export default class Resume extends Command {
@@ -100,7 +109,43 @@ export default class Resume extends Command {
         return
       }
 
-      const recentEvents = schemaCheck.events.slice(-10).map((event) => ({
+      const pendingRecovery = findPendingAgentRecoveryState(schemaCheck.events, state.sessionId ?? undefined)
+      let currentStage = state.stage
+
+      if (pendingRecovery && state.stage !== 'RECOVER' && state.sessionId) {
+        const previousStage = state.stage
+        const transitionEvent = appendAuditEvent(eventsPath, {
+          actor: 'system',
+          event: 'stage_transition',
+          metadata: {
+            from_stage: previousStage,
+            pending_intent_id: pendingRecovery.intentId,
+            reason: 'detected_pending_agent_intent',
+            to_stage: 'RECOVER',
+          },
+          reason: `检测到未完成的 agent_intent: ${pendingRecovery.intentId}`,
+          sessionId: state.sessionId,
+          stage: 'RECOVER',
+        })
+
+        state.lastEventId = transitionEvent.event_id
+        state.lastEventChecksum = transitionEvent.checksum
+        state.lastTransition = {
+          from: previousStage,
+          reason: `检测到未完成的 agent_intent: ${pendingRecovery.intentId}`,
+          timestamp: transitionEvent.ts,
+          to: 'RECOVER',
+        }
+        state.stage = 'RECOVER'
+        state.updatedAt = transitionEvent.ts
+        saveRuntimeState(workspacePath, state)
+        currentStage = state.stage
+      }
+
+      const eventsForResponse = pendingRecovery && currentStage === 'RECOVER'
+        ? readEventsStrict(eventsPath)
+        : schemaCheck.events
+      const recentEvents = eventsForResponse.slice(-10).map((event) => ({
         checksum: event.checksum,
         event: event.event,
         'event_id': event.event_id,
@@ -120,8 +165,16 @@ export default class Resume extends Command {
             'upcasted_events': schemaCheck.upcasted,
           },
           recentEvents,
+          recoveryState: pendingRecovery
+            ? {
+                detected: true,
+                pendingIntent: pendingRecovery,
+              }
+            : {
+                detected: false,
+              },
           sessionId: state.sessionId,
-          stage: state.stage,
+          stage: currentStage,
         }),
         flags,
       )

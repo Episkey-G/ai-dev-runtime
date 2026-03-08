@@ -7,6 +7,8 @@ import type {AgentIntent} from '../../src/adapters/types.js'
 
 import {
   findCachedAgentOutcome,
+  findPendingAgentRecoveryState,
+  hasIntentCheckpoint,
   writeAgentCompensation,
   writeAgentIntent,
   writeAgentResult,
@@ -37,6 +39,7 @@ describe('event-helpers', () => {
 
     writeAgentIntent(intent, {eventsPath, stage: 'IMPLEMENT'})
     writeAgentResult(intent, {eventsPath, stage: 'IMPLEMENT'}, {intentId: 'intent_1', output: 'ok', success: true})
+    expect(hasIntentCheckpoint(intent)).toBe(true)
 
     const events = readEventsStrict(eventsPath)
     expect(events.map((event) => event.event)).toEqual(['agent_intent', 'agent_result'])
@@ -82,5 +85,47 @@ describe('event-helpers', () => {
     expect(cached?.success).toBe(false)
     expect(cached?.error?.code).toBe('CONNECTOR_TIMEOUT')
     expect(cached?.error?.details).toEqual({timeoutMs: 120_000})
+  })
+
+  it('应识别未完成的 agent_intent 作为恢复状态', () => {
+    const workspace = fs.mkdtempSync(path.join(os.tmpdir(), 'ai-dev-runtime-agent-recovery-'))
+    dirs.push(workspace)
+    const eventsPath = path.join(workspace, 'events.jsonl')
+
+    const pendingIntent: AgentIntent = {
+      agentId: 'claude',
+      eventsPath,
+      intentId: 'intent_pending',
+      sessionId: 'session_recover',
+      stage: 'IMPLEMENT',
+      task: 'do risky op',
+    }
+
+    const completedIntent: AgentIntent = {
+      agentId: 'codex',
+      eventsPath,
+      intentId: 'intent_done',
+      sessionId: 'session_recover',
+      stage: 'PLAN',
+      task: 'summarize',
+    }
+
+    writeAgentIntent(completedIntent, {eventsPath, stage: 'PLAN'})
+    writeAgentResult(
+      completedIntent,
+      {eventsPath, stage: 'PLAN'},
+      {intentId: 'intent_done', output: 'done', success: true},
+    )
+    writeAgentIntent(pendingIntent, {eventsPath, stage: 'IMPLEMENT'})
+
+    const events = readEventsStrict(eventsPath)
+    const pending = findPendingAgentRecoveryState(events, 'session_recover')
+
+    expect(pending).toEqual({
+      agentId: 'claude',
+      intentId: 'intent_pending',
+      stage: 'IMPLEMENT',
+      timestamp: expect.any(String),
+    })
   })
 })
