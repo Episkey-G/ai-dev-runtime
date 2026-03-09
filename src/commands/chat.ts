@@ -1,6 +1,7 @@
 /* eslint-disable camelcase */
 
 import {Command, Flags} from '@oclif/core'
+import chalk from 'chalk'
 import fs from 'node:fs'
 import path from 'node:path'
 import {createInterface} from 'node:readline'
@@ -517,17 +518,18 @@ private readonly router = new AdapterRouter({
   }
 
   private printHelp(): void {
-    this.log('可用命令:')
-    this.log('/help                  显示帮助')
-    this.log('/stage                 查看当前 stage/agent/session')
-    this.log('/next                  初始化或查看下一步建议')
-    this.log('/handoff [agent]       切换 Agent (claude/codex，不传则自动切换)')
-    this.log('/approve [reason]      批准当前 Gate')
-    this.log('/reject <reason>       拒绝当前 Gate')
-    this.log('/other <direction> [reason]  记录自定义 Gate 决策')
-    this.log('/history [limit]       查看当前会话历史（默认 20）')
-    this.log('/replay [limit]        校验并回放事件（默认 20）')
-    this.log('/quit                  退出 REPL')
+    this.log(chalk.cyan('可用命令（支持 Tab 自动补全）:'))
+    this.log('')
+    this.log(chalk.green('/help') + '                  显示帮助')
+    this.log(chalk.green('/stage') + '                 查看当前 stage/agent/session')
+    this.log(chalk.green('/next') + '                  初始化或查看下一步建议')
+    this.log(chalk.green('/handoff [agent]') + '       切换 Agent (claude/codex)')
+    this.log(chalk.green('/approve [reason]') + '       批准当前 Gate')
+    this.log(chalk.green('/reject <reason>') + '        拒绝当前 Gate')
+    this.log(chalk.green('/other <direction> [reason]') + '  记录自定义 Gate 决策')
+    this.log(chalk.green('/history [limit]') + '        查看会话历史（默认 20）')
+    this.log(chalk.green('/replay [limit]') + '         校验并回放事件（默认 20）')
+    this.log(chalk.green('/quit') + '                   退出 REPL')
   }
 
   private printHistory(workspacePath: string, limit: number): void {
